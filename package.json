@@ -9,7 +9,7 @@
     "start": "npm run build & npm run serve"
   },
   "author": "maliut",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "express": "^4.16.3"
   },
