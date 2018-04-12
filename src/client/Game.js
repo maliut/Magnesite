@@ -1,9 +1,12 @@
+import Renderer from 'Renderer';
+
 export default class Game {
 
     constructor() {
         /**
          * requestAnimationFrame 返回的 id
          * @type {number}
+         * @private
          */
         this.raf = null;
 
@@ -34,6 +37,7 @@ export default class Game {
         /**
          * 尚未调用 update() 的时间量
          * @type {number}
+         * @private
          */
         this.delta = 0;
 
@@ -52,24 +56,39 @@ export default class Game {
         /**
          * 上次更新 fps 的时间
          * @type {number}
+         * @private
          */
         this.lastFPSUpdate = 0;
+
+        /**
+         * 游戏渲染器
+         * @type {Renderer}
+         */
+        this.renderer = null;
+
+        /**
+         * 当前游戏场景
+         * @type {Scene}
+         */
+        this.scene = null;
     }
 
     /**
      * start the main loop
      */
     start() {
-        if (this.isRunning) return;
+        if (!this.scene) throw "Miss scene in game instance, are you forget to assign game.scene?";
+        if (this.isRunning) throw "This game is already running!";
         this.isRunning = true;
-        const self = this;
-        this.raf = requestAnimationFrame(function(timestamp) {
+        //const self = this;
+        this.raf = requestAnimationFrame((timestamp) => {
             // 初始化变量
-            self.lastFrameTime = timestamp;
-            self.lastFPSUpdate = timestamp;
-            self.framesThisSecond = 0;
+            this.lastFrameTime = timestamp;
+            this.lastFPSUpdate = timestamp;
+            this.framesThisSecond = 0;
 
-            self.raf = requestAnimationFrame(self.loop.bind(self));
+            this.renderer = new Renderer();
+            this.raf = requestAnimationFrame(this.loop.bind(this));
         });
     }
 
@@ -130,13 +149,14 @@ export default class Game {
      * @param deltaTime 一次更新的时间
      */
     update(deltaTime) {
-
+        this.scene.update(deltaTime);
     }
 
     /**
      * render screen
      */
     render() {
+        this.renderer.render(this.scene);
         document.getElementById("fps").innerText = this.fps.toFixed(2) + " FPS";
     }
 
