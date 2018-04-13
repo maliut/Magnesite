@@ -1,7 +1,7 @@
-//const path = require('path');
-import path from 'path';
+const path = require('path');
+//import path from 'path';
 
-export default {
+module.exports = {
 
     mode: 'development',
 
@@ -14,7 +14,7 @@ export default {
         filename: 'bundle.js'
     },
 
-    module: {
+    /*module: {
         rules: [
             {
                 test: /\.js$/,
@@ -22,6 +22,6 @@ export default {
                 loader: "babel-loader"
             }
         ]
-    }
+    }*/
 
 };

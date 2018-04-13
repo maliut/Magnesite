@@ -1,5 +1,5 @@
 // HLA Interface
-export const Event = {
+module.exports = {
     CREATE_ROOM: 'createRoom',
     JOIN_ROOM: 'joinRoom',
     LEAVE_ROOM: 'exitLobby',

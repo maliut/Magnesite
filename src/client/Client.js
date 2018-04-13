@@ -1,10 +1,11 @@
-import {Event} from '../common/Event';
+//import {Event} from '../common/Event';
+const Event = require('../common/Event');
 
 /**
  * 客户端 socket 的封装类
  * 将 socket 通信封装成规范接口，以方便调用
  */
-export default class Client {
+class Client {
 
     constructor(socket) {
         this.socket = socket;
@@ -82,3 +83,5 @@ export default class Client {
         // 同步游戏状态
     }
 }
+
+module.exports = Client;

@@ -1,7 +1,7 @@
 //import path from 'path';
 //import express from 'express';
-import RTI from 'RTI';
-
+//import RTI from 'RTI';
+const RTI = require('./RTI');
 const path = require('path');
 const express = require('express');
 const app = express();

@@ -1,6 +1,7 @@
-import Renderer from 'Renderer';
+//import Renderer from 'Renderer';
+const Renderer = require('./Renderer');
 
-export default class Game {
+class Game {
 
     constructor() {
         /**
@@ -169,3 +170,5 @@ export default class Game {
         this.delta = 0;
     }
 }
+
+module.exports = Game;

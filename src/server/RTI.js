@@ -1,11 +1,11 @@
 const uuid = require('uuid/v1');
-
-import {Event} from "../common/Event";
+const Event = require('../common/Event');
+//import {Event} from "../common/Event";
 
 /**
  * 所有网络事件的处理器
  */
-export default class RTI {
+class RTI {
 
     constructor(io) {
         this.io = io;
@@ -118,3 +118,5 @@ export default class RTI {
     }
 
 }
+
+module.exports = RTI;
