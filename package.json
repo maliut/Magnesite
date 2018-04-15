@@ -12,6 +12,9 @@
   "license": "MIT",
   "dependencies": {
     "express": "^4.16.3",
+    "material-ui": "^0.20.0",
+    "react": "^16.3.1",
+    "react-dom": "^16.3.1",
     "socket.io": "^2.1.0",
     "three": "^0.91.0",
     "uuid": "^3.2.1"
@@ -19,6 +22,7 @@
   "devDependencies": {
     "babel-loader": "^7.1.4",
     "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
     "webpack": "^4.2.0",
     "webpack-cli": "^2.0.12"
   }

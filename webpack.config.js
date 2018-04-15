@@ -7,21 +7,21 @@ module.exports = {
 
     devtool: "eval-cheap-module-source-map",
 
-    entry: './src/client/index.js',
+    entry: './src/client/index.jsx',
 
     output: {
         path: path.resolve(__dirname, './public/'),
         filename: 'bundle.js'
     },
 
-    /*module: {
+    module: {
         rules: [
             {
-                test: /\.js$/,
+                test: /\.jsx$/,
                 include: path.resolve(__dirname, './src/'),
                 loader: "babel-loader"
             }
         ]
-    }*/
+    }
 
 };
