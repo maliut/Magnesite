@@ -13,6 +13,7 @@
   "dependencies": {
     "express": "^4.16.3",
     "socket.io": "^2.1.0",
+    "three": "^0.91.0",
     "uuid": "^3.2.1"
   },
   "devDependencies": {

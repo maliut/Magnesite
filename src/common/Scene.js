@@ -1,4 +1,9 @@
-export default class Scene {
+const THREE = require('three');
+
+/**
+ * Scene of a game, a wrapper for THREE.Scene
+ */
+class Scene {
 
     constructor() {
         /**
@@ -17,23 +22,77 @@ export default class Scene {
 
         /**
          * 场景中所有对象
-         * @type {Set<GameObject>}
+         * @type {Array<GameObject>}
          * @private
          */
-        this._gameObjects = new Set();
+        this._gameObjects = [];
     }
 
+    /**
+     * add a game object to scene
+     * @param gameobj GameObject
+     */
     add(gameobj) {
-        this._gameObjects.add(gameobj);
+        if (this._gameObjects.indexOf(gameobj) === -1) {
+            this._gameObjects.push(gameobj);
+            if (gameobj._obj3d.isCamera) {
+                this._camera = gameobj._obj3d;
+            }
+            this._scene.add(gameobj._obj3d);
+        }
     }
 
+    /**
+     * remove game object
+     * @param gameobj GameObject
+     */
     remove(gameobj) {
-        this._gameObjects.delete(gameobj);
+        this._gameObjects.remove(gameobj);
+        this._scene.remove(gameobj._obj3d);
     }
 
+    /**
+     * get game object of id
+     * @param id
+     * @returns {GameObject}
+     */
+    getObjectById(id) {
+        let obj3d = this._scene.getObjectById(id);
+        return obj3d ? obj3d._gameObject : null;
+    }
+
+    /**
+     * get game object of name
+     * @param name
+     * @returns {GameObject}
+     */
+    getObjectByName(name) {
+        let obj3d = this._scene.getObjectByName(name);
+        return obj3d ? obj3d._gameObject : null;
+    }
+
+    /**
+     * get game object of property
+     * @param name
+     * @param value
+     * @returns {GameObject}
+     */
+    getObjectByProperty(name, value) {
+        let obj3d = this._scene.getObjectByProperty(name, value);
+        return obj3d ? obj3d._gameObject : null;
+    }
+
+    /**
+     * update scene by delta time
+     * should only used in Game#update
+     * @param deltaTime
+     * @private
+     */
     update(deltaTime) {
         for (let obj of this._gameObjects) {
             obj.update(deltaTime);
         }
     }
 }
+
+module.exports = Scene;

@@ -1,3 +1,5 @@
+const THREE = require('three');
+
 /**
  * 封装了 three.js 的 Renderer
  * 将渲染器与 three.js 耦合的具体逻辑与 Game 类的抽象逻辑分离
