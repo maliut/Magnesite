@@ -11,7 +11,9 @@ class Client {
         this.socket = socket;
         this.roomId = null;
         // todo 订阅事件
-        this.socket.on(Event.SYNC_CLIENTS, this.onSync);
+        //this.socket.on(Event.ROOMS_CHANGE, this.onRoomChange);
+
+        //this.socket.on(Event.SYNC_CLIENTS, this.onSync);
 
         this.EMPTY = () => {};
     }
@@ -75,6 +77,10 @@ class Client {
         });
     }
 
+    subscribe(event, callback) {
+        this.socket.on(event, callback);
+    }
+
     sendChatMessage() {
         // todo
     }
@@ -83,5 +89,16 @@ class Client {
         // 同步游戏状态
     }
 }
+
+Client._instance = null;
+
+Object.defineProperty(Client, "current", {
+    get: function () {
+        if (!Client._instance) {
+            Client._instance = new Client(io());
+        }
+        return Client._instance;
+    }
+});
 
 module.exports = Client;

@@ -37,6 +37,7 @@ class RTI {
                 socket.to(Event.ROOMS_CHANGE).emit(Event.ROOMS_CHANGE, this.listRooms());
             }
         });
+        socket.join(Event.ROOMS_CHANGE);
     }
 
     /**

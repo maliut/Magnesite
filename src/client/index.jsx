@@ -20,11 +20,17 @@ function scene1() {
 const React = require('react');
 const ReactDOM = require('react-dom');
 const MuiThemeProvider = require('material-ui/styles/MuiThemeProvider')['default'];
-const RaisedButton = require('material-ui/RaisedButton')['default'];
+const TitleBar = require('./ui/TitleBar.jsx');
+const LobbyList = require('./ui/LobbyList.jsx');
+const CreateRoomButton = require('./ui/CreateRoomButton.jsx');
 
 const App = () => (
     <MuiThemeProvider>
-        <RaisedButton label={'test'} primary={true}/>
+        <div>
+            <TitleBar />
+            <LobbyList/>
+            <CreateRoomButton/>
+        </div>
     </MuiThemeProvider>
 );
 
