@@ -18,6 +18,12 @@ class Client {
         this.EMPTY = () => {};
     }
 
+    logout() {
+        this.socket.emit(Event.LOGOUT);
+        Client.current = null;
+        Client._inited = false;
+    }
+
     /**
      * 获取房间列表
      * @param callback 获取后回调
@@ -90,15 +96,17 @@ class Client {
     }
 }
 
-Client._instance = null;
+Client._inited = false;
 
-Object.defineProperty(Client, "current", {
-    get: function () {
-        if (!Client._instance) {
-            Client._instance = new Client(io());
-        }
-        return Client._instance;
+Client.init = function(token) {
+    if (Client._inited) {
+        console.warn("Client is already initialized!");
+        return;
     }
-});
+
+    let socket = io.connect('', {query: 'token=' + token});
+    Client.current = new Client(socket);
+    Client._inited = true;
+};
 
 module.exports = Client;

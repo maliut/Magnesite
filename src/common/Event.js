@@ -1,5 +1,7 @@
 // HLA Interface
 module.exports = {
+    LOGOUT: 'logout',
+
     CREATE_ROOM: 'createRoom',
     JOIN_ROOM: 'joinRoom',
     LEAVE_ROOM: 'exitLobby',

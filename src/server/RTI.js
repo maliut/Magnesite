@@ -20,6 +20,15 @@ class RTI {
      */
     addClient(socket) {
         //socket.extra = {};
+        socket.on(Event.LOGOUT, () => {
+            socket.disconnect(true);
+        });
+
+        socket.on('disconnect', () => {
+            console.log("socket disconnect:" + socket.id);
+            // todo 做退出房间逻辑
+        });
+
         socket.on(Event.LIST_ROOMS, () => {
             socket.emit(Event.LIST_ROOMS, this.listRooms());
         });
@@ -38,6 +47,8 @@ class RTI {
             }
         });
         socket.join(Event.ROOMS_CHANGE);
+        // debug show sockets
+        console.log("socket:" + Object.keys(this.io.sockets.sockets));
     }
 
     /**

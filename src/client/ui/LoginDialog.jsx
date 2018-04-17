@@ -2,24 +2,27 @@ const React = require('react');
 const Dialog = require('material-ui/Dialog')['default'];
 const FlatButton = require('material-ui/FlatButton')['default'];
 const TextField = require('material-ui/TextField')['default'];
+const $ = require('superagent');
 
 class LoginDialog extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            open: false,
             username: "",
-            password: ""
+            password: "",
+            usernameError: false,
+            passwordError: false,
+            errmsg: ''
         };
-        this.handleOpen = this.handleOpen.bind(this);
-        this.handleClose = this.handleClose.bind(this);
+        //this.handleOpen = this.handleOpen.bind(this);
+        //this.handleClose = this.handleClose.bind(this);
         this.handleUsername = this.handleUsername.bind(this);
         this.handlePassword = this.handlePassword.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleOpen() {
+    /*handleOpen() {
         this.setState((old) => {
             old.open = true;
             return old;
@@ -27,67 +30,83 @@ class LoginDialog extends React.Component {
     };
 
     handleClose() {
-        this.setState((old) => {
-            old.open = false;
-            return old;
-        });
-    };
+        this.setState({open: false});
+    };*/
 
     handleUsername(_, value) {
-        this.setState((old) => {
-            old.username = value;
-            return old;
+        this.setState({
+            username: value,
+            usernameError: value.length === 0
         });
     }
 
     handlePassword(_, value) {
-        this.setState((old) => {
-            old.password = value;
-            return old;
+        this.setState({
+            password: value,
+            passwordError: value.length === 0
         });
     }
 
     handleSubmit() {
-        console.log(this.state.username, this.state.password);
+        if (this.state.username.length === 0) {
+            this.setState({usernameError: true});
+            return;
+        }
+        if (this.state.password.length === 0) {
+            this.setState({passwordError: true});
+            return;
+        }
+        $.post('/login').send({
+                username: this.state.username,
+                password: this.state.password
+        }).then(res => {
+            let data = res.body;
+            if (data.code === 0) {
+                // 登录成功
+                //this.setState({open: false});
+                this.props.onLogin(data);
+            } else {
+                // 登录失败
+                this.setState({errmsg: data.message});
+            }
+        });
     }
 
     render() {
         const actions = [
-            <FlatButton
+            /*<FlatButton
                 label="取消"
                 primary={true}
-                onClick={this.handleClose}/>,
+                onClick={this.handleClose}/>,*/
             <FlatButton
-                label="登录"
+                label="提交"
                 primary={true}
                 keyboardFocused={true}
-                onClick={this.handleSubmit}/>,
+                onClick={this.handleSubmit}/>
         ];
 
         return (
-            <div>
-                <FlatButton label={'Login'} style={{color: 'white', marginTop: '7px'}} onClick={this.handleOpen} />
-                <Dialog
-                    actions={actions}
-                    modal={false}
-                    open={this.state.open}
-                    onRequestClose={this.handleClose}
-                    contentStyle={{width: '304px'}}>
-                    <TextField
-                        hintText="用户名"
-                        floatingLabelText="用户名"
-                        value={this.state.username}
-                        onChange={this.handleUsername}
-                    /><br />
-                    <TextField
-                        hintText="密码"
-                        floatingLabelText="密码"
-                        type="password"
-                        value={this.state.password}
-                        onChange={this.handlePassword}
-                    /><br />
-                </Dialog>
-            </div>
+            <Dialog
+                title={'登录'}
+                actions={actions}
+                modal={true}
+                open={true}
+                contentStyle={{width: '304px'}}>
+                <p style={{color: 'red', fontSize: '12px', margin: 0}}>{this.state.errmsg}</p>
+                <TextField
+                    hintText="用户名"
+                    floatingLabelText="用户名"
+                    errorText={this.state.usernameError ? "用户名不能为空" : ""}
+                    value={this.state.username}
+                    onChange={this.handleUsername}/>
+                <TextField
+                    hintText="密码"
+                    floatingLabelText="密码"
+                    errorText={this.state.passwordError ? "密码不能为空" : ""}
+                    type="password"
+                    value={this.state.password}
+                    onChange={this.handlePassword}/>
+            </Dialog>
         );
     }
 

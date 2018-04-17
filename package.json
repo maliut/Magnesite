@@ -11,11 +11,15 @@
   "author": "maliut",
   "license": "MIT",
   "dependencies": {
+    "body-parser": "^1.18.2",
     "express": "^4.16.3",
+    "jsonwebtoken": "^8.2.1",
     "material-ui": "^0.20.0",
     "react": "^16.3.1",
     "react-dom": "^16.3.1",
     "socket.io": "^2.1.0",
+    "socketio-jwt": "^4.5.0",
+    "superagent": "^3.8.2",
     "three": "^0.91.0",
     "uuid": "^3.2.1"
   },
