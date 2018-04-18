@@ -74,9 +74,7 @@ class Client {
     leaveRoom(callback = this.EMPTY) {
         if (!this.roomId) return;
 
-        this.socket.emit(Event.LEAVE_ROOM, {
-            id: this.roomId
-        });
+        this.socket.emit(Event.LEAVE_ROOM);
         this.socket.on(Event.LEAVE_ROOM, (data) => {
             this.roomId = null;
             callback(data);

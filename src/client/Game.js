@@ -65,7 +65,7 @@ class Game {
          * 游戏渲染器
          * @type {Renderer}
          */
-        this.renderer = null;
+        this.renderer = new Renderer();
 
         /**
          * 当前游戏场景
@@ -88,7 +88,7 @@ class Game {
             this.lastFPSUpdate = timestamp;
             this.framesThisSecond = 0;
 
-            this.renderer = new Renderer();
+            //this.renderer = new Renderer();
             this.raf = requestAnimationFrame(this.loop.bind(this));
         });
     }
@@ -158,7 +158,7 @@ class Game {
      */
     render() {
         this.renderer.render(this.scene);
-        document.getElementById("fps").innerText = this.fps.toFixed(2) + " FPS";
+        //document.getElementById("fps").innerText = this.fps.toFixed(2) + " FPS";
     }
 
     /**

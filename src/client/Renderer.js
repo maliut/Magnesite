@@ -14,8 +14,12 @@ class Renderer {
          * @private
          */
         this._renderer = new THREE.WebGLRenderer({antialias: true});
-        this._renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(this._renderer.domElement);
+        //this._renderer.setSize(window.innerWidth, window.innerHeight);
+        //document.body.appendChild(this._renderer.domElement);
+    }
+
+    setSize(width, height) {
+        this._renderer.setSize(width, height);
     }
 
     /**
@@ -26,8 +30,8 @@ class Renderer {
         this._renderer.render(scene._scene, scene._camera);
     }
 
-    onWindowResize() {
-        this._renderer.setSize(window.innerWidth, window.innerHeight);
+    getDomElement() {
+        return this._renderer.domElement;
     }
 }
 

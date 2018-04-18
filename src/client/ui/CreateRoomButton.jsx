@@ -43,8 +43,13 @@ class CreateRoomButton extends React.Component {
 
     handleCreateRoom() {
         let hasPw = this.state.roomPassword.trim().length > 0;
-        Client.current.createRoom(this.state.roomName, hasPw ? this.state.roomPassword : null, () => {
-           // todo
+        Client.current.createRoom(this.state.roomName, hasPw ? this.state.roomPassword : null, (room) => {
+           this.handleClose();
+           Client.current.joinRoom(room.id, hasPw ? this.state.roomPassword : null, (ret) => {
+               if (ret === 0) {
+                   this.props.onJoinRoom(room);
+               }
+           });
         });
     }
 

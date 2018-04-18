@@ -114,7 +114,7 @@ class GameObject {
         //let origin = new GameObject(...constructor_args);
         let proxy = new Proxy(origin, handler);
         proxy._origin = origin;
-        proxy.class = GameObject;
+        //proxy.class = GameObject;
         return proxy;
     }
 

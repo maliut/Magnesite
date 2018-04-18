@@ -4,7 +4,7 @@ const FlatButton = require('material-ui/FlatButton')['default'];
 const TextField = require('material-ui/TextField')['default'];
 const $ = require('superagent');
 
-class LoginDialog extends React.Component {
+class LoginPanel extends React.Component {
 
     constructor(props) {
         super(props);
@@ -112,4 +112,4 @@ class LoginDialog extends React.Component {
 
 }
 
-module.exports = LoginDialog;
+module.exports = LoginPanel;
