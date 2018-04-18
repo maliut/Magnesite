@@ -3,9 +3,9 @@ const path = require('path');
 
 module.exports = {
 
-    mode: 'development',
+    //mode: 'development',
 
-    devtool: "eval-cheap-module-source-map",
+    //devtool: "eval-cheap-module-source-map",
 
     entry: './src/client/index.jsx',
 
@@ -22,6 +22,12 @@ module.exports = {
                 loader: "babel-loader"
             }
         ]
+    },
+
+    externals: {
+        "react": 'React',
+        "react-dom": "ReactDOM",
+        "superagent": "superagent"
     }
 
 };
