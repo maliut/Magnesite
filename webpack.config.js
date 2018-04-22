@@ -27,7 +27,8 @@ module.exports = {
     externals: {
         "react": 'React',
         "react-dom": "ReactDOM",
-        "superagent": "superagent"
+        "superagent": "superagent",
+        "three": 'THREE'
     }
 
 };

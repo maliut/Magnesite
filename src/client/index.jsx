@@ -36,7 +36,7 @@ class App extends React.Component {
     }
 
     onJoinRoom(room) {
-        console.log("join room:" + JSON.stringify(room));
+        //console.log("join room:" + JSON.stringify(room));
 
         this.game = new Game();
         this.game.scene = setUp(new Scene());
@@ -44,7 +44,7 @@ class App extends React.Component {
 
         this.setState({room: room});
 
-        document.addEventListener( 'keyup', requestFullscreen, false );
+        //document.addEventListener( 'keyup', requestFullscreen, false );
         //requestFullscreen();
     }
 
@@ -54,7 +54,7 @@ class App extends React.Component {
                 <div>
                     <TitleBar user={this.state} onLogout={this.onLogout.bind(this)}/>
                     { this.state.login ?
-                        ( this.state.room ? <GamePanel renderer={this.game.renderer} height={window.innerHeight-68}/> : <RoomList onJoinRoom={this.onJoinRoom.bind(this)} /> )
+                        ( this.state.room ? <GamePanel game={this.game}/> : <RoomList onJoinRoom={this.onJoinRoom.bind(this)} /> )
                             : <LoginPanel onLogin={this.onLogin.bind(this)} /> }
                     { this.state.room ? null : <CreateRoomButton onJoinRoom={this.onJoinRoom.bind(this)} /> }
                 </div>
@@ -63,34 +63,19 @@ class App extends React.Component {
     }
 }
 
-ReactDOM.render(
-    <App/>,
-    document.getElementById('root')
-);
+ReactDOM.render(<App/>, document.body);
 
 function setUp(scene) {
-    let camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
+    let camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight-64, 0.1, 1000 );
+    camera.position.z = 5;
     scene.add(new GameObject(camera));
 
-    let light = new THREE.HemisphereLight( 0xeeeeff, 0x777788, 0.75 );
-    scene.add(new GameObject(light));
+    //let light = new THREE.HemisphereLight( 0xeeeeff, 0x777788, 0.75 );
+    //scene.add(new GameObject(light));
 
-    let floorGeometry = new THREE.PlaneGeometry( 2000, 2000, 100, 100 );
-    floorGeometry.rotateX( - Math.PI / 2 );
-    for ( let i = 0, l = floorGeometry.vertices.length; i < l; i ++ ) {
-        let vertex = floorGeometry.vertices[ i ];
-        vertex.x += Math.random() * 20 - 10;
-        vertex.y += Math.random() * 2;
-        vertex.z += Math.random() * 20 - 10;
-    }
-    for ( let i = 0, l = floorGeometry.faces.length; i < l; i ++ ) {
-        let face = floorGeometry.faces[ i ];
-        face.vertexColors[ 0 ] = new THREE.Color().setHSL( Math.random() * 0.3 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
-        face.vertexColors[ 1 ] = new THREE.Color().setHSL( Math.random() * 0.3 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
-        face.vertexColors[ 2 ] = new THREE.Color().setHSL( Math.random() * 0.3 + 0.5, 0.75, Math.random() * 0.25 + 0.75 );
-    }
-    let floorMaterial = new THREE.MeshBasicMaterial( { vertexColors: THREE.VertexColors } );
-    let floor = new THREE.Mesh( floorGeometry, floorMaterial );
-    scene.add(new GameObject(floor));
+    var geometry = new THREE.BoxGeometry( 1, 1, 1);
+    var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+    var cube = new THREE.Mesh( geometry, material );
+    scene.add(new GameObject(cube));
     return scene;
 }

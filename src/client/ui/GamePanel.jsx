@@ -7,28 +7,28 @@ class GamePanel extends React.Component {
     }*/
 
     componentDidMount() {
-        const width = this.mount.clientWidth;
-        const height = this.mount.clientHeight;
-        this.props.renderer.setSize(width, height);
-        this.mount.appendChild(this.props.renderer.getDomElement());
-        setWindowResizeListener(this.onWindowResize.bind(this));
+        this.onWindowResize();
+        this.mount.appendChild(this.props.game.renderer.domElement);
+        addWindowResizeListener(this.onWindowResize.bind(this));
     }
 
     componentWillUnmount() {
-        this.mount.removeChild(this.props.renderer.getDomElement());
+        this.mount.removeChild(this.props.game.renderer.domElement);
         removeWindowResizeListener(this.onWindowResize.bind(this));
     }
 
     onWindowResize() {
         const width = this.mount.clientWidth;
         const height = this.mount.clientHeight;
-        this.props.renderer.setSize(width, height);
+        this.props.game.renderer.onWindowResize(width, height);
+        this.props.game.scene._camera.aspect = width / height;
+        this.props.game.scene._camera.updateProjectionMatrix();
     }
 
     render() {
         return (
             <div
-                style={{height: this.props.height}}
+                style={{position: 'absolute', bottom: 0, top: '64px', left: 0, right: 0}}
                 ref={(mount) => { this.mount = mount }}
             />
         )

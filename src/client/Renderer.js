@@ -7,7 +7,6 @@ const THREE = require('three');
 class Renderer {
 
     constructor() {
-        // initialize
         /**
          * three.js 的渲染器
          * @type {THREE.WebGLRenderer}
@@ -16,9 +15,12 @@ class Renderer {
         this._renderer = new THREE.WebGLRenderer({antialias: true});
         //this._renderer.setSize(window.innerWidth, window.innerHeight);
         //document.body.appendChild(this._renderer.domElement);
+        Object.defineProperty(this, 'domElement', {
+            value: this._renderer.domElement
+        });
     }
 
-    setSize(width, height) {
+    onWindowResize(width, height) {
         this._renderer.setSize(width, height);
     }
 
@@ -30,9 +32,6 @@ class Renderer {
         this._renderer.render(scene._scene, scene._camera);
     }
 
-    getDomElement() {
-        return this._renderer.domElement;
-    }
 }
 
 module.exports = Renderer;

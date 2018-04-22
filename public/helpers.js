@@ -23,7 +23,7 @@ function exitFullscreen() {
     document.exitFullscreen();
 }
 
-function setWindowResizeListener(listener) {
+function addWindowResizeListener(listener) {
     window.addEventListener('resize', listener, false);
 }
 

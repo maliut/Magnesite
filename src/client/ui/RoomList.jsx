@@ -53,14 +53,17 @@ class RoomList extends React.Component {
 
     render() {
         return (
-            <div style={{display: 'flex', flexWrap: 'wrap', margin: '10px'}}>
+            <div style={{position: 'absolute', bottom: 0, top: '64px', left: 0, right: 0}}>
                 {
                     this.state.rooms.length === 0 ?
-                    <p style={{width: '100%', textAlign: 'center', marginTop: '10rem'}}>暂无可以加入的房间</p> :
+                        <div style={{width: '100%', height: '100%', display: 'flex', alignItems: 'center'}}>
+                            <p style={{margin: 0, textAlign: 'center', width: '100%'}}>暂无可以加入的房间</p>
+                        </div>
+                     :
                     <GridList
                         cellHeight={180}
                         padding={10}
-                        style={{width: '100%'}}
+                        style={{width: '100%', margin: 0}}
                         cols={4}>
                         {this.state.rooms.map((tile) => (
                             <GridTile
