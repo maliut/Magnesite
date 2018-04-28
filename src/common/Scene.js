@@ -35,11 +35,12 @@ class Scene {
     add(gameobj) {
         if (this._gameObjects.indexOf(gameobj) === -1) {
             this._gameObjects.push(gameobj);
-            if (gameobj._obj3d.isCamera) {
-                this._camera = gameobj._obj3d;
-            }
+            //if (gameobj._obj3d.isCamera) {
+            //    this._camera = gameobj._obj3d;
+            //}
             this._scene.add(gameobj._obj3d);
         }
+        gameobj.onStart(this);
     }
 
     /**
@@ -47,6 +48,7 @@ class Scene {
      * @param gameobj GameObject
      */
     remove(gameobj) {
+        gameobj.onRemove();
         this._gameObjects.remove(gameobj);
         this._scene.remove(gameobj._obj3d);
     }
@@ -92,6 +94,13 @@ class Scene {
         for (let obj of this._gameObjects) {
             obj.update(deltaTime);
         }
+    }
+
+    spawn(gameObject, position = gameObject.position, rotation = gameObject.rotation) {
+        let newObj = gameObject.clone();
+        newObj.position = position;
+        newObj.rotation = rotation;
+        this.add(newObj);
     }
 }
 

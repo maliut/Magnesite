@@ -9,6 +9,12 @@ class Component {
          * @type {null}
          */
         this.gameObject = null;
+
+        /**
+         * properties to be serialized
+         * @type {{}}
+         */
+        this.props = {};
     }
 
     /**
@@ -31,3 +37,5 @@ class Component {
 
     }
 }
+
+module.exports = Component;

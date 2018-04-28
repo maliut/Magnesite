@@ -10,6 +10,10 @@ class GameObject {
             value: this
         });
 
+        Object.defineProperty(this, "children", {
+            get: () => this._obj3d.children.map((o) => o._gameObject)
+        });
+
         /**
          * 所有组件
          * @type {Map<Function, Array<Component>>}
@@ -41,6 +45,7 @@ class GameObject {
         if (typeof component.update === 'function') {
             this.componentsNeedUpdate.push(component);
         }
+        component.gameObject = this;
     }
 
     /**
@@ -53,6 +58,7 @@ class GameObject {
             exists.remove(component);
         }
         this.componentsNeedUpdate.remove(component);
+        component.gameObject = null;
     }
 
     /**
@@ -84,7 +90,7 @@ class GameObject {
             for (let i of value) {
                 i.onReceive(sender, ...args);
             }
-        })
+        });
     }
 
     /**
@@ -110,12 +116,54 @@ class GameObject {
                 return key in target || key in target._obj3d;
             }
         };
-        console.log(this);
+        //console.log(this);
         //let origin = new GameObject(...constructor_args);
         let proxy = new Proxy(origin, handler);
         proxy._origin = origin;
         //proxy.class = GameObject;
         return proxy;
+    }
+
+    /**
+     * 物体被加入到场景中时回调
+     */
+    onStart(scene) {
+        // 自身组件 onstart
+        this.components.forEach(value => {
+            for (let i of value) {
+                if (typeof i.start === 'function') {
+                    i.start();
+                }
+            }
+        });
+        // 子物体递归调用 onstart
+        //console.log(this._obj3d.children);
+        //console.log(this.name, this.children, this._obj3d.children);
+        for (let child of this.children) {
+            if (!child) continue;
+            child.onStart(scene);
+        }
+        // 保存相机用于渲染
+        //console.log(this._obj3d.name, this._obj3d.isCamera);
+        if (this._obj3d.isCamera) {
+            //console.log(this._obj3d.name, 'set camera');
+            scene._camera = this._obj3d;
+        }
+    }
+
+    onRemove() {
+        // 自身组件 destroy
+        this.components.forEach(value => {
+            for (let i of value) {
+                if (typeof i.destroy === 'function') {
+                    i.destroy();
+                }
+            }
+        });
+        // 子物体递归调用 onremove
+        for (let child of this.children) {
+            child.onRemove();
+        }
     }
 
     /**
@@ -129,6 +177,23 @@ class GameObject {
         }
     }
 
+    add(...gameObjects) {
+        this._obj3d.add(...gameObjects.map((o) => o._obj3d))
+    }
+
+    remove(...gameObjects) {
+        this._obj3d.remove(...gameObjects.map((o) => o._obj3d))
+    }
+
+    clone() {
+        let newObj3d = this._obj3d.clone();
+        let ret = new GameObject(newObj3d);
+        let components = this.components.values();
+        for (let value of components) {
+            ret.addComponent(JSON.parse(JSON.stringify(value)));
+        }
+        return ret;
+    }
 }
 
 module.exports = GameObject;

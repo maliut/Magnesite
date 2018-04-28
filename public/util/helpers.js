@@ -11,6 +11,7 @@ function requestFullscreen() {
         document.documentElement.requestFullscreen || document.documentElement.mozRequestFullScreen ||
         document.documentElement.webkitRequestFullScreen || document.documentElement.msRequestFullscreen;
     document.documentElement.requestFullscreen();
+    //requestPointerLock();
 }
 
 /**
@@ -21,6 +22,15 @@ function exitFullscreen() {
         document.exitFullscreen || document.mozCancelFullScreen ||
         document.webkitCancelFullScreen || document.msExitFullscreen;
     document.exitFullscreen();
+}
+
+function requestPointerLock() {
+    document.body.requestPointerLock = document.body.requestPointerLock || document.body.mozRequestPointerLock || document.body.webkitRequestPointerLock;
+    document.body.requestPointerLock();
+}
+
+function getPointerLockElement() {
+    return document.pointerLockElement || document.mozPointerLockElement || document.webkitPointerLockElement;
 }
 
 function addWindowResizeListener(listener) {
