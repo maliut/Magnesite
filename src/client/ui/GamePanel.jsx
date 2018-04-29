@@ -2,12 +2,7 @@ const React = require('react');
 
 class GamePanel extends React.Component {
 
-    /*constructor(props) {
-        super(props);
-    }*/
-
     componentDidMount() {
-        if (this.props.progress < 100) return;
         this.onWindowResize();
         this.mount.appendChild(this.props.game.renderer.domElement);
         addWindowResizeListener(this.onWindowResize.bind(this));
@@ -18,12 +13,9 @@ class GamePanel extends React.Component {
         }, false);
         this.onPointerLockChange = this.onPointerLockChange.bind(this);
         document.addEventListener( 'pointerlockchange', this.onPointerLockChange, false );
-        //document.addEventListener( 'mozpointerlockchange', this.onPointerLockChange, false );
-        //document.addEventListener( 'webkitpointerlockchange', this.onPointerLockChange, false );
     }
 
     componentWillUnmount() {
-        if (this.props.progress < 100) return;
         this.mount.removeChild(this.props.game.renderer.domElement);
         removeWindowResizeListener(this.onWindowResize.bind(this));
         document.removeEventListener( 'pointerlockchange', this.onPointerLockChange, false );
@@ -50,18 +42,16 @@ class GamePanel extends React.Component {
             <div
                 style={{position: 'absolute', bottom: 0, top: '64px', left: 0, right: 0}}
                 ref={(mount) => { this.mount = mount }}> {
-                    this.props.progress < 100 && <p>{this.props.progress + '%'}</p>
+                    <div style={{position: 'absolute', background: 'rgba(0,0,0,0.5)',
+                        width: '100%', height: '100%', color: '#fff', textAlign: 'center',
+                        display: 'flex', alignItems: 'center'}}
+                         ref={(mount) => { this.instruction = mount }}>
+                        <span style={{width: '100%', cursor: 'pointer'}}>Click to play</span>
+                    </div>
                 }
-                <div style={{position: 'absolute', background: 'rgba(0,0,0,0.5)',
-                    width: '100%', height: '100%', color: '#fff', textAlign: 'center',
-                    display: 'flex', alignItems: 'center'}}
-                    ref={(mount) => { this.instruction = mount }}>
-                    <span style={{width: '100%', cursor: 'pointer'}}>Click to play</span>
-                </div>
             </div>
         )
     }
-
 }
 
 module.exports = GamePanel;

@@ -1,37 +1,40 @@
 const Component = require('../Component');
 const THREE = require('three');
-//const PI_2 = Math.PI / 2;
+const Input = require('../Input');
+const ENV_CLIENT = !(typeof window === 'undefined');
 
 /**
  * 控制玩家第一人称行走
  */
+@Component.serializedName('FirstPersonController')
 class FirstPersonController extends Component {
 
     start() {
         this.yaw = new THREE.Object3D();
         this.gameObject._obj3d.add(this.yaw);
-        document.addEventListener('mousemove', this.onMouseMove.bind(this), false);
 
-        this.keyboard = new THREEx.KeyboardState();
+        this.input = new Input();
+        this.input._yaw = this.yaw;
+
         this.tempPos = new THREE.Vector3();
 
         this.props.speed = 0.1;
     }
 
     destroy() {
-        document.removeEventListener('mousemove', this.onMouseMove.bind(this), false);
-        this.keyboard.destroy();
+        this.input.destroy();
     }
 
     update() {
-        //console.log("update");
-        if (this.keyboard.pressed('W')) {
+        this.yaw.rotation.y = this.input.getOrientation();
+
+        if (this.input.getKey('W')) {
             this.yaw.translateZ(-this.props.speed);
-        } else if (this.keyboard.pressed('S')) {
+        } else if (this.input.getKey('S')) {
             this.yaw.translateZ(this.props.speed);
-        } else if (this.keyboard.pressed('A')) {
+        } else if (this.input.getKey('A')) {
             this.yaw.translateX(-this.props.speed);
-        } else if (this.keyboard.pressed('D')) {
+        } else if (this.input.getKey('D')) {
             this.yaw.translateX(this.props.speed);
         }
 
@@ -41,12 +44,6 @@ class FirstPersonController extends Component {
         this.yaw.position.set(0, 0, 0);
     }
 
-    onMouseMove(event) {
-        if (getPointerLockElement() !== document.body) return;
-        let movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
-        //let movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
-        this.yaw.rotation.y -= movementX * 1 / 1000;
-    }
 }
 
 module.exports = FirstPersonController;

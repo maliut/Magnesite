@@ -2,5 +2,5 @@
   "presets": [
     "react"
   ],
-  "plugins": []
+  "plugins": ["transform-decorators-legacy"]
 }

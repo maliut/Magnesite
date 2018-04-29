@@ -38,4 +38,17 @@ class Component {
     }
 }
 
+Component.serializedComponents = {};
+
+// decorator
+Component.serializedName = function(name) {
+    return function(target) {
+        Component.serializedComponents[name] = target;
+    }
+};
+
+Component.clientOnly = function (target) {
+    target.isClientOnly = true;
+};
+
 module.exports = Component;

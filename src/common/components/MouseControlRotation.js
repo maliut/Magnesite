@@ -4,6 +4,8 @@ const PI_2 = Math.PI / 2;
 /**
  * 鼠标移动相机控制视角转换
  */
+@Component.clientOnly
+@Component.serializedName('MouseControlRotation')
 class MouseControlRotation extends Component {
 
     start() {

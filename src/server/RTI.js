@@ -1,5 +1,8 @@
 const uuid = require('uuid/v1');
 const Event = require('../common/Event');
+const Game = require('./Game');
+const Scene = require('../common/Scene');
+const loadScene = require('../common/loadScene');
 
 /**
  * 所有网络事件的处理器
@@ -15,6 +18,7 @@ class RTI {
      * - name - 房间名字
      * - password - 房间密码
      * - headcount - 当前人数
+     * - game - 正在进行的游戏
      */
 
     constructor(io) {
@@ -42,7 +46,22 @@ class RTI {
         });
         // 创建房间
         socket.on(Event.CREATE_ROOM, (data) => {
-            socket.emit(Event.CREATE_ROOM, this.createRoom(data));
+            let room = this.createRoom(data);
+            room.game = new Game();
+            loadScene().then((arr) => {
+                let scene = new Scene();
+                for (let i = 0; i < arr.length; i++) {
+                    scene.add(arr[i]);
+                }
+                //arr.forEach((obj) => {scene.add(obj)});
+                room.game.scene = scene;
+                room.game.start();
+                socket.emit(Event.CREATE_ROOM, {
+                    id: room.id,
+                    name: room.name,
+                    password: !!room.password
+                });
+            });
         });
         // 加入房间
         socket.on(Event.JOIN_ROOM, (data) => {

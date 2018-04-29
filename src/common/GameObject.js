@@ -1,3 +1,5 @@
+const ENV_CLIENT = !(typeof window === 'undefined');
+
 class GameObject {
 
     constructor(obj3d) {
@@ -36,6 +38,8 @@ class GameObject {
      * @param component
      */
     addComponent(component) {
+        console.log(component.class);
+        if (!ENV_CLIENT && component.class.isClientOnly) return;
         let exists = this.components.get(component.class);
         if (exists) {
             exists.push(component);

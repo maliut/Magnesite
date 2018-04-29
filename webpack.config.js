@@ -20,6 +20,10 @@ module.exports = {
                 test: /\.jsx$/,
                 include: path.resolve(__dirname, './src/'),
                 loader: "babel-loader"
+            },
+            {
+                include: path.resolve(__dirname, './src/common/components/'),
+                loader: "babel-loader"
             }
         ]
     },
@@ -29,6 +33,10 @@ module.exports = {
         "react-dom": "ReactDOM",
         "superagent": "superagent",
         "three": 'THREE'
+    },
+
+    node: {
+        fs: "empty"
     }
 
 };

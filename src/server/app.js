@@ -54,3 +54,10 @@ const rti = new RTI(io);
 io.on('connection', (socket) => {
     rti.addClient(socket);
 });
+
+// meta.js es6 ployfill
+Object.defineProperty(Object.prototype, "class", {
+    get: function() {
+        return Object.getPrototypeOf(this).constructor;
+    }
+});

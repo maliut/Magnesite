@@ -1,4 +1,4 @@
-export default class Game {
+class Game {
 
     constructor() {
         /**
@@ -97,3 +97,5 @@ export default class Game {
         console.warn("update costs too long(" + frameTime + "ms)!");
     }
 }
+
+module.exports = Game;
