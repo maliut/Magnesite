@@ -1,4 +1,3 @@
-//import {Event} from '../common/Event';
 const Event = require('../common/Event');
 
 /**
@@ -19,7 +18,7 @@ class Client {
     }
 
     logout() {
-        this.socket.emit(Event.LOGOUT);
+        this.socket.emit(Event.CLIENT_LOGOUT);
         Client.current = null;
         Client._inited = false;
     }
@@ -29,8 +28,8 @@ class Client {
      * @param callback 获取后回调
      */
     listRooms(callback = this.EMPTY) {
-        this.socket.emit(Event.LIST_ROOMS);
-        this.socket.on(Event.LIST_ROOMS, callback);
+        this.socket.emit(Event.CLIENT_LIST_ROOMS);
+        this.socket.on(Event.CLIENT_LIST_ROOMS, callback);
     }
 
     /**
@@ -40,11 +39,11 @@ class Client {
      * @param callback 创建后回调
      */
     createRoom(name, password = null, callback = this.EMPTY) {
-        this.socket.emit(Event.CREATE_ROOM, {
+        this.socket.emit(Event.CLIENT_CREATE_ROOM, {
             name: name,
             password: password
         });
-        this.socket.on(Event.CREATE_ROOM, callback);
+        this.socket.on(Event.CLIENT_CREATE_ROOM, callback);
     }
 
     /**
@@ -57,12 +56,12 @@ class Client {
         // return if already in roomId
         if (this.roomId != null) return;
 
-        this.socket.emit(Event.JOIN_ROOM, {
+        this.socket.emit(Event.CLIENT_JOIN_ROOM, {
             id: id,
             password: password
         });
-        this.socket.on(Event.JOIN_ROOM, (data) => {
-            this.roomId = data.id;
+        this.socket.on(Event.CLIENT_JOIN_ROOM, (data) => {
+            this.roomId = data.roomId;
             callback(data);
         });
     }
@@ -74,11 +73,21 @@ class Client {
     leaveRoom(callback = this.EMPTY) {
         if (!this.roomId) return;
 
-        this.socket.emit(Event.LEAVE_ROOM);
-        this.socket.on(Event.LEAVE_ROOM, (data) => {
+        this.socket.emit(Event.CLIENT_LEAVE_ROOM);
+        this.socket.on(Event.CLIENT_LEAVE_ROOM, (data) => {
             this.roomId = null;
             callback(data);
         });
+    }
+
+    /**
+     * 发送位置同步数据
+     * @param state
+     */
+    sendState(state) {
+        if (!this.roomId) return;
+        //console.log(state);
+        this.socket.emit(Event.CLIENT_SEND_STATE, state);
     }
 
     subscribe(event, callback) {

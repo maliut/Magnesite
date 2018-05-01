@@ -19,7 +19,7 @@ class RoomList extends React.Component {
 
     componentDidMount() {
         Client.current.listRooms((data) => {
-            console.log(data);
+            //console.log(data);
             this.setState({rooms: data});
         });
         Client.current.subscribe(Event.ROOMS_CHANGE, (data) => {
@@ -31,9 +31,10 @@ class RoomList extends React.Component {
         if (room.password) {
             this.setState({roomForPassword: room});
         } else {
-            Client.current.joinRoom(room.id, null, (ret) => {
-                if (ret === 0) {
+            Client.current.joinRoom(room.id, null, (data) => {
+                if (data.ret === 0) {
                     this.setState({roomForPassword: null});
+                    room.existPlayers = data.existPlayers || [];
                     this.props.onJoinRoom(room);
                 }
             });
@@ -41,11 +42,12 @@ class RoomList extends React.Component {
     }
 
     onSubmit(room, password) {
-        Client.current.joinRoom(room.id, password, (ret) => {
-            if (ret === -2) {
+        Client.current.joinRoom(room.id, password, (data) => {
+            if (data.ret === -2) {
                 this.setState({errmsg: '密码错误'})
-            } else if (ret === 0) {
+            } else if (data.ret === 0) {
                 this.setState({roomForPassword: null, errmsg: ''});
+                room.existPlayers = data.existPlayers || [];
                 this.props.onJoinRoom(room);
             }
         });

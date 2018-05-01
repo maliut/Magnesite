@@ -1,18 +1,38 @@
 const React = require('react');
+const Client = require('../Client');
+const Event = require('../../common/Event');
 
 class GamePanel extends React.Component {
 
+    /**
+     * 客户端游戏开始时调用
+     */
     componentDidMount() {
+        // 处理 dom 事件
         this.onWindowResize();
         this.mount.appendChild(this.props.game.renderer.domElement);
         addWindowResizeListener(this.onWindowResize.bind(this));
-        // handle pointer lock
+        // 处理 pointer lock
         this.instruction.addEventListener('click', () => {
             this.instruction.style.display = 'none';
             requestPointerLock();
         }, false);
         this.onPointerLockChange = this.onPointerLockChange.bind(this);
         document.addEventListener( 'pointerlockchange', this.onPointerLockChange, false );
+        // 订阅服务端的消息
+        Client.current.subscribe(Event.SERVER_SPAWN, (data) => {
+            //console.log(data);
+            let gameObject = this.props.game.scene.spawn(data.prefab);
+            gameObject.networkId = data.id;
+        });
+        Client.current.subscribe(Event.SERVER_SEND_STATE, (data) => {
+            //console.log(data);
+            this.props.game.onPlayerState(JSON.parse(data));
+        });
+        Client.current.subscribe(Event.SERVER_DESTROY, (data) => {
+            let playerObj = this.props.game.scene.getObjectByProperty('networkId', data.networkId);
+            this.props.game.scene.remove(playerObj);
+        });
     }
 
     componentWillUnmount() {

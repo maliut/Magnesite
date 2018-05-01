@@ -2,12 +2,13 @@ const uuid = require('uuid/v1');
 const Event = require('../common/Event');
 const Game = require('./Game');
 const Scene = require('../common/Scene');
+const Resource = require('../common/Resource');
 const loadScene = require('../common/loadScene');
 
 /**
  * 所有网络事件的处理器
  */
-class RTI {
+class Server {
 
     /*
      * 一个 socket 对应了一个已经登录的玩家，自定义属性：
@@ -17,7 +18,7 @@ class RTI {
      * - id - 随机 id
      * - name - 房间名字
      * - password - 房间密码
-     * - headcount - 当前人数
+     * - players - 玩家 socket 数组
      * - game - 正在进行的游戏
      */
 
@@ -37,17 +38,19 @@ class RTI {
             this.leaveRoom(socket);   // 退出房间
         });
         // 客户端登出事件
-        socket.on(Event.LOGOUT, () => {
+        socket.on(Event.CLIENT_LOGOUT, () => {
             socket.disconnect(true);
         });
         // 获得所有房间列表
-        socket.on(Event.LIST_ROOMS, () => {
-            socket.emit(Event.LIST_ROOMS, this.listRooms());
+        socket.on(Event.CLIENT_LIST_ROOMS, () => {
+            socket.emit(Event.CLIENT_LIST_ROOMS, this.listRooms());
         });
         // 创建房间
-        socket.on(Event.CREATE_ROOM, (data) => {
+        socket.on(Event.CLIENT_CREATE_ROOM, (data) => {
             let room = this.createRoom(data);
             room.game = new Game();
+            room.game.syncMethod = this.updateRoom(room.id);
+            // 根据游戏类型 load 不同的 scene
             loadScene().then((arr) => {
                 let scene = new Scene();
                 for (let i = 0; i < arr.length; i++) {
@@ -56,7 +59,7 @@ class RTI {
                 //arr.forEach((obj) => {scene.add(obj)});
                 room.game.scene = scene;
                 room.game.start();
-                socket.emit(Event.CREATE_ROOM, {
+                socket.emit(Event.CLIENT_CREATE_ROOM, {
                     id: room.id,
                     name: room.name,
                     password: !!room.password
@@ -64,12 +67,23 @@ class RTI {
             });
         });
         // 加入房间
-        socket.on(Event.JOIN_ROOM, (data) => {
-            socket.emit(Event.JOIN_ROOM, this.joinRoom(socket, data));
+        socket.on(Event.CLIENT_JOIN_ROOM, (data) => {
+            let retdata = {ret: this.joinRoom(socket, data)};
+            if (retdata.ret === 0) {    // 返回现有玩家
+                retdata.roomId = socket.room.id;
+                retdata.existPlayers = socket.room.players.map((socket) => socket.id);
+                retdata.existPlayers.remove(socket.id);
+
+                // 接收客户端状态
+                socket.on(Event.CLIENT_SEND_STATE, (data) => {
+                    socket.room.game.onPlayerState(socket, data);
+                });
+            }
+            socket.emit(Event.CLIENT_JOIN_ROOM, retdata);
         });
         // 离开房间
-        socket.on(Event.LEAVE_ROOM, () => {
-            socket.emit(Event.LEAVE_ROOM, this.leaveRoom(socket));
+        socket.on(Event.CLIENT_LEAVE_ROOM, () => {
+            socket.emit(Event.CLIENT_LEAVE_ROOM, this.leaveRoom(socket));
         });
         // 订阅房间列表变动事件
         socket.join(Event.ROOMS_CHANGE);
@@ -94,7 +108,7 @@ class RTI {
     /**
      * 创建房间
      * @param data
-     * @returns {{id: *, name, password: *|string, headcount: number}}
+     * @returns {{}}
      */
     createRoom(data) {
         let id = uuid();
@@ -102,7 +116,7 @@ class RTI {
             id: id,
             name: data.name,
             password: data.password,
-            headcount: 0
+            players: []
         };
         this.rooms.set(id, room);
         this.notifyRoomListChange();
@@ -122,10 +136,17 @@ class RTI {
         if (room.password && room.password !== data.password) return -2;   // password invalid
 
         socket.room = room;
-        room.headcount++;
         socket.leave(Event.ROOMS_CHANGE); // 不再监听房间变动
         socket.join(data.id);    // 加入特定房间
         socket.join(data.id + '/chat');  // 订阅房间聊天
+
+        room.players.push(socket);
+        // 通知所有玩家，加入新玩家
+        room.game.scene.spawn('player').networkId = socket.id;
+        this.io.in(room.id).emit(Event.SERVER_SPAWN, {
+            id: socket.id,
+            prefab: 'player'
+        });
         return 0;
     }
 
@@ -143,11 +164,31 @@ class RTI {
         socket.join(Event.ROOMS_CHANGE);    // 监听房间变动
 
         // 房间没人时销毁房间
-        if (--room.headcount <= 0) {
+        room.players.remove(socket);
+        if (room.players.length <= 0) {
             this.rooms.delete(room.id);
             this.notifyRoomListChange();
+        } else {
+            let playerObj = room.game.scene.getObjectByProperty('networkId', socket.id);
+            room.game.scene.remove(playerObj);
+            this.io.in(room.id).emit(Event.SERVER_DESTROY, {
+                networkId: socket.id,
+            });
         }
+
         return 0;
+    }
+
+    /**
+     * 更新房间内游戏状态
+     * 返回闭包，供 Game 对象的更新方法使用
+     * @param roomId
+     * @returns {Function}
+     */
+    updateRoom(roomId) {
+        return (data) => {
+            this.io.in(roomId).emit(Event.SERVER_SEND_STATE, JSON.stringify(data));
+        }
     }
 
     /**
@@ -157,10 +198,6 @@ class RTI {
         this.io.in(Event.ROOMS_CHANGE).emit(Event.ROOMS_CHANGE, this.listRooms());
     }
 
-    syncGame(roomId, data) {
-        this.io.in(roomId).emit(Event.SYNC_CLIENTS, data);
-    }
-
 }
 
-module.exports = RTI;
+module.exports = Server;

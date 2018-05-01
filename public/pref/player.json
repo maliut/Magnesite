@@ -1,0 +1,11 @@
+{
+  "objType": "json",
+  "objName": "player",
+  "name": "player",
+  "components": [{
+    "name": "Synchronizer",
+    "props": {
+      "interval": 6
+    }
+  }]
+}

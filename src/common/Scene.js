@@ -1,4 +1,5 @@
 const THREE = require('three');
+const Resource = require('./Resource');
 
 /**
  * Scene of a game, a wrapper for THREE.Scene
@@ -26,6 +27,13 @@ class Scene {
          * @private
          */
         this._gameObjects = [];
+
+        /**
+         * 临时保存另一端传来的数据，用于同步
+         * @type {networkId: data}
+         */
+        this.clientState = {};
+        this.serverState = {};
     }
 
     /**
@@ -35,9 +43,6 @@ class Scene {
     add(gameobj) {
         if (this._gameObjects.indexOf(gameobj) === -1) {
             this._gameObjects.push(gameobj);
-            //if (gameobj._obj3d.isCamera) {
-            //    this._camera = gameobj._obj3d;
-            //}
             this._scene.add(gameobj._obj3d);
         }
         gameobj.onStart(this);
@@ -80,15 +85,24 @@ class Scene {
      * @returns {GameObject}
      */
     getObjectByProperty(name, value) {
-        let obj3d = this._scene.getObjectByProperty(name, value);
-        return obj3d ? obj3d._gameObject : null;
+        // gameObject 上的属性，暴力查找
+        if (name === 'networkId') {
+            for (let i = 0; i < this._gameObjects.length; i++) {
+                if (this._gameObjects[i][name] === value) {
+                    return this._gameObjects[i];
+                }
+            }
+            return null;
+        } else {    // proxy THREE.Object3D 上的属性
+            let obj3d = this._scene.getObjectByProperty(name, value);
+            return obj3d ? obj3d._gameObject : null;
+        }
     }
 
     /**
      * update scene by delta time
      * should only used in Game#update
      * @param deltaTime
-     * @private
      */
     update(deltaTime) {
         for (let obj of this._gameObjects) {
@@ -96,11 +110,13 @@ class Scene {
         }
     }
 
-    spawn(gameObject, position = gameObject.position, rotation = gameObject.rotation) {
-        let newObj = gameObject.clone();
-        newObj.position = position;
-        newObj.rotation = rotation;
+    spawn(prefabName, position, rotation) {
+        let newObj = Resource.Prefab[prefabName].clone();
+        if (position) newObj.position.set(position.x, position.y, position.z);
+        if (rotation) newObj.rotation.set(rotation.x, rotation.y, rotation.z);
         this.add(newObj);
+        //console.log(newObj);
+        return newObj;
     }
 }
 

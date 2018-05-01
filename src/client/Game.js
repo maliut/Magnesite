@@ -1,46 +1,10 @@
-//import Renderer from 'Renderer';
 const Renderer = require('./Renderer');
+const BaseGame = require('../common/BaseGame');
 
-class Game {
+class Game extends BaseGame {
 
     constructor() {
-        /**
-         * requestAnimationFrame 返回的 id
-         * @type {number}
-         * @private
-         */
-        this.raf = null;
-
-        /**
-         * 游戏正在进行吗？
-         * @type {boolean}
-         */
-        this.isRunning = false;
-
-        /**
-         * 最大 FPS
-         * @type {number}
-         */
-        this.maxFPS = 60;
-
-        /**
-         * loop() 上次调用的时间
-         * @type {number}
-         */
-        this.lastFrameTime = 0;
-
-        /**
-         * 我们希望调用 update() 的时间间隔
-         * @type {number}
-         */
-        this.updateTimeStep = 1000 / 60;
-
-        /**
-         * 尚未调用 update() 的时间量
-         * @type {number}
-         * @private
-         */
-        this.delta = 0;
+        super();
 
         /**
          * 真实 fps （平均）
@@ -66,22 +30,13 @@ class Game {
          * @type {Renderer}
          */
         this.renderer = new Renderer();
-
-        /**
-         * 当前游戏场景
-         * @type {Scene}
-         */
-        this.scene = null;
     }
 
     /**
      * start the main loop
      */
     start() {
-        if (!this.scene) throw "Miss scene in game instance, are you forget to assign game.scene?";
-        if (this.isRunning) throw "This game is already running!";
-        this.isRunning = true;
-        //const self = this;
+        super.start();
         this.raf = requestAnimationFrame((timestamp) => {
             // 初始化变量
             this.lastFrameTime = timestamp;
@@ -98,7 +53,7 @@ class Game {
      */
     stop() {
         cancelAnimationFrame(this.raf);
-        this.isRunning = false;
+        super.stop();
     }
 
     /**
@@ -146,14 +101,6 @@ class Game {
     }
 
     /**
-     * update game state
-     * @param deltaTime 一次更新的时间
-     */
-    update(deltaTime) {
-        this.scene.update(deltaTime);
-    }
-
-    /**
      * render screen
      */
     render() {
@@ -168,6 +115,12 @@ class Game {
         console.warn("WARNING: panic!");
         // 丢弃未模拟的时间，等待下次权威服务器同步
         this.delta = 0;
+    }
+
+    // network
+    onPlayerState(state) {
+        //console.log(state);
+        this.scene.serverState = state;
     }
 }
 

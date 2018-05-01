@@ -1,7 +1,4 @@
-//import path from 'path';
-//import express from 'express';
-//import RTI from 'RTI';
-const RTI = require('./RTI');
+const Server = require('./Server');
 const path = require('path');
 const express = require('express');
 const jwt = require('jsonwebtoken');
@@ -18,7 +15,7 @@ app.get('/', (req, res) => {
 
 app.get('/*' , (req, res) => {
     const file = req.params[0];
-    console.log('\t :: Express :: file requested : ' + file);
+    //console.log('\t :: Express :: file requested : ' + file);
     res.sendFile(path.resolve('public/' + file));
 });
 
@@ -50,10 +47,25 @@ io.set('authorization', socketioJwt.authorize({
     handshake: true
 }));
 
-const rti = new RTI(io);
+const gameSvr = new Server(io);
 io.on('connection', (socket) => {
-    rti.addClient(socket);
+    gameSvr.addClient(socket);
 });
+
+// js helpers
+Array.prototype.indexOf = function(val) {
+    for (var i = 0; i < this.length; i++) {
+        if (this[i] === val) return i;
+    }
+    return -1;
+};
+
+Array.prototype.remove = function(val) {
+    var index = this.indexOf(val);
+    if (index > -1) {
+        this.splice(index, 1);
+    }
+};
 
 // meta.js es6 ployfill
 Object.defineProperty(Object.prototype, "class", {

@@ -6,11 +6,14 @@ const ENV_CLIENT = !(typeof window === 'undefined');
 /**
  * 控制玩家第一人称行走
  */
+@Component.clientOnly
 @Component.serializedName('FirstPersonController')
 class FirstPersonController extends Component {
 
     start() {
         this.yaw = new THREE.Object3D();
+        let p = this.gameObject.position;
+        this.yaw.position.set(p.x, p.y, p.z);
         this.gameObject._obj3d.add(this.yaw);
 
         this.input = new Input();

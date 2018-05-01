@@ -16,6 +16,24 @@ class GameObject {
             get: () => this._obj3d.children.map((o) => o._gameObject)
         });
 
+        Object.defineProperty(this, "peerState", {
+            get: () => this.scene[ENV_CLIENT? 'serverState' : 'clientState'][this.networkId],
+            set: (value) => this.scene[ENV_CLIENT? 'serverState' : 'clientState'][this.networkId] = value
+        });
+
+        /**
+         * 游戏物体所在的场景
+         * @type {Scene}
+         */
+        this.scene = null;
+
+        /**
+         * 游戏的网络 id
+         * 如果是需要多人同步的物体，由服务端生成
+         * @type {String}
+         */
+        this.networkId = null;
+
         /**
          * 所有组件
          * @type {Map<Function, Array<Component>>}
@@ -38,7 +56,7 @@ class GameObject {
      * @param component
      */
     addComponent(component) {
-        console.log(component.class);
+        //console.log(component.class);
         if (!ENV_CLIENT && component.class.isClientOnly) return;
         let exists = this.components.get(component.class);
         if (exists) {
@@ -50,6 +68,10 @@ class GameObject {
             this.componentsNeedUpdate.push(component);
         }
         component.gameObject = this;
+        // 添加组件时已经在场景中？那么补充调用组件的 onstart
+        if (this.scene && typeof component.start === 'function') {
+            component.start();
+        }
     }
 
     /**
@@ -57,6 +79,11 @@ class GameObject {
      * @param component
      */
     removeComponent(component) {
+        // 删除组件时仍然在场景中？那么补充调用组件的 ondestroy
+        if (this.scene && typeof component.destroy === 'function') {
+            component.destroy();
+        }
+
         let exists = this.components.get(component.class);
         if (exists) {
             exists.remove(component);
@@ -132,6 +159,7 @@ class GameObject {
      * 物体被加入到场景中时回调
      */
     onStart(scene) {
+        this.scene = scene;
         // 自身组件 onstart
         this.components.forEach(value => {
             for (let i of value) {
@@ -166,8 +194,11 @@ class GameObject {
         });
         // 子物体递归调用 onremove
         for (let child of this.children) {
+            if (!child) continue;
             child.onRemove();
         }
+
+        this.scene = null;
     }
 
     /**
@@ -182,20 +213,32 @@ class GameObject {
     }
 
     add(...gameObjects) {
-        this._obj3d.add(...gameObjects.map((o) => o._obj3d))
+        this._obj3d.add(...gameObjects.map((o) => o._obj3d));
+        // 已经在场景中，补充调用 onstart
+        if (this.scene) {
+            gameObjects.forEach((obj) => obj.onStart(this.scene));
+        }
     }
 
     remove(...gameObjects) {
-        this._obj3d.remove(...gameObjects.map((o) => o._obj3d))
+        // 仍然在场景中，补充调用 onremove
+        if (this.scene) {
+            gameObjects.forEach((obj) => obj.onRemove());
+        }
+        this._obj3d.remove(...gameObjects.map((o) => o._obj3d));
     }
 
     clone() {
         let newObj3d = this._obj3d.clone();
         let ret = new GameObject(newObj3d);
-        let components = this.components.values();
-        for (let value of components) {
-            ret.addComponent(JSON.parse(JSON.stringify(value)));
-        }
+        this.components.forEach(value => {
+            for (let i of value) {
+                let comp = new i.class();
+                comp.props = JSON.parse(JSON.stringify(i.props));
+                ret.addComponent(comp);
+            }
+        });
+        //console.log(ret);
         return ret;
     }
 }

@@ -1,19 +1,26 @@
 // HLA Interface
 module.exports = {
-    LOGOUT: 'logout',
+    // client 主动发起
+    CLIENT_LOGOUT: 'logout',
 
-    CREATE_ROOM: 'createRoom',
-    JOIN_ROOM: 'joinRoom',
-    LEAVE_ROOM: 'exitLobby',
-    DESTROY_ROOM: 'destroyLobby',
-    LIST_ROOMS: 'listRooms',
+    CLIENT_CREATE_ROOM: 'createRoom',
+    CLIENT_JOIN_ROOM: 'joinRoom',
+    CLIENT_LEAVE_ROOM: 'leaveRoom',
+    //DESTROY_ROOM: 'destroyLobby',
+    CLIENT_LIST_ROOMS: 'listRooms',
 
     ROOMS_CHANGE: 'lobbiesChange',
 
-    SYNC_CLIENTS: 'syncClients',
-    REPORT_INPUT: 'reportInput',
+    //SYNC_CLIENTS: 'syncClients',
+    //REPORT_INPUT: 'reportInput',
+    CLIENT_SEND_STATE: 'clientState',
 
-    CHAT_MESSAGE: 'chatMessage'
+    // server 发起
+    SERVER_SPAWN: 'spawn',
+    SERVER_SEND_STATE: 'serverState',
+    SERVER_DESTROY: 'destroy'
+
+    //CHAT_MESSAGE: 'chatMessage'
 
 };
 // create roomId
