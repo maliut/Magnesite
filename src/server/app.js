@@ -3,7 +3,8 @@ const path = require('path');
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const socketioJwt = require('socketio-jwt');
-
+const CryptoJS = require("crypto-js");
+const User = require('./User');
 const JWT_SECRET = 'logthecatfish';
 const app = express();
 
@@ -19,23 +20,39 @@ app.get('/*' , (req, res) => {
     res.sendFile(path.resolve('public/' + file));
 });
 
-// user login
+// user server
 app.use(require('body-parser').json());
 app.post('/login', (req, res) => {
-    let {username, password} = req.body;
-    // todo 判断重复登录
-    if (username === 'admin' && password === '123456') {
-        let token = jwt.sign(req.body, JWT_SECRET, { expiresIn: '5h' });
-        res.json({ code: 0, token: token, username: username });
-    } else {
-        res.json({ code: 1, message: "用户名与密码不匹配！"});
+    let bytes  = CryptoJS.AES.decrypt(req.body.data, JWT_SECRET);
+    let data = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+    if (Date.now() - data.timestamp > 1000) {
+        res.json({ code: 2, message: "登录超时，请重试！"});
+        return;
     }
+    let { username, password } = data;
+    // todo 判断重复登录
+    User.validate(username, password).then(() => {
+        let token = loginGameServer(username, password);
+        res.json({ code: 0, token: token, username: username });
+    }).catch(() => {
+        res.json({ code: 1, message: "用户名与密码不匹配！"});
+    });
+});
+
+app.post('/register', (req, res) => {
+    let bytes  = CryptoJS.AES.decrypt(req.body.data, JWT_SECRET);
+    let { username, password } = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+    User.new(username, password).then(() => {
+        let token = loginGameServer(username, password);
+        res.json({ code: 0, token: token, username: username });
+    }).catch((err) => {
+        res.json({ code: 100, message: err.message });
+    });
 });
 
 const server = app.listen(3000, () => {
     const host = server.address().address;
     const port = server.address().port;
-
     console.log('Example app listening at http://%s:%s', host, port);
 });
 
@@ -51,6 +68,11 @@ const gameSvr = new Server(io);
 io.on('connection', (socket) => {
     gameSvr.addClient(socket);
 });
+
+function loginGameServer(username, password) {
+    return jwt.sign({username: username, password: password}, JWT_SECRET, { expiresIn: '5h' });
+}
+
 
 // js helpers
 Array.prototype.indexOf = function(val) {

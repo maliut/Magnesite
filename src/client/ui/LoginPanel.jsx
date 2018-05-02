@@ -3,6 +3,7 @@ const Dialog = require('material-ui/Dialog')['default'];
 const FlatButton = require('material-ui/FlatButton')['default'];
 const TextField = require('material-ui/TextField')['default'];
 const $ = require('superagent');
+const CryptoJS = require("crypto-js");
 
 class LoginPanel extends React.Component {
 
@@ -20,6 +21,7 @@ class LoginPanel extends React.Component {
         this.handleUsername = this.handleUsername.bind(this);
         this.handlePassword = this.handlePassword.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleRegister = this.handleRegister.bind(this);
     }
 
     /*handleOpen() {
@@ -56,10 +58,12 @@ class LoginPanel extends React.Component {
             this.setState({passwordError: true});
             return;
         }
-        $.post('/login').send({
-                username: this.state.username,
-                password: this.state.password
-        }).then(res => {
+        let xxx = CryptoJS.AES.encrypt(JSON.stringify({
+            username: this.state.username,
+            password: this.state.password,
+            timestamp: Date.now()
+        }), 'logthecatfish').toString();
+        $.post('/login').send({data: xxx}).then(res => {
             let data = res.body;
             if (data.code === 0) {
                 // 登录成功
@@ -72,14 +76,39 @@ class LoginPanel extends React.Component {
         });
     }
 
+    handleRegister() {
+        if (this.state.username.length === 0) {
+            this.setState({usernameError: true});
+            return;
+        }
+        if (this.state.password.length === 0) {
+            this.setState({passwordError: true});
+            return;
+        }
+        let xxx = CryptoJS.AES.encrypt(JSON.stringify({
+            username: this.state.username,
+            password: this.state.password
+        }), 'logthecatfish').toString();
+        $.post('/register').send({data: xxx}).then(res => {
+            let data = res.body;
+            if (data.code === 0) {
+                // 登录成功
+                this.props.onLogin(data);
+            } else {
+                // 注册失败
+                this.setState({errmsg: data.message});
+            }
+        });
+    }
+
     render() {
         const actions = [
-            /*<FlatButton
-                label="取消"
-                primary={true}
-                onClick={this.handleClose}/>,*/
             <FlatButton
-                label="提交"
+                label="注册"
+                primary={true}
+                onClick={this.handleRegister}/>,
+            <FlatButton
+                label="登录"
                 primary={true}
                 keyboardFocused={true}
                 onClick={this.handleSubmit}/>
@@ -87,7 +116,7 @@ class LoginPanel extends React.Component {
 
         return (
             <Dialog
-                title={'登录'}
+                title={'注册或登录以继续'}
                 actions={actions}
                 modal={true}
                 open={true}

@@ -32,7 +32,8 @@ module.exports = {
         "react": 'React',
         "react-dom": "ReactDOM",
         "superagent": "superagent",
-        "three": 'THREE'
+        "three": 'THREE',
+        "crypto-js": "CryptoJS"
     },
 
     node: {
