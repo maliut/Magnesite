@@ -2,10 +2,6 @@
 const THREE = require('three');
 const GameObject = require('./GameObject');
 const Resource = require('./Resource');
-const FirstPersonController = require('./components/FirstPersonController');
-const MouseControlRotation = require('./components/MouseControlRotation');
-const Synchronizer = require('./components/Synchronizer');
-
 
 module.exports = function () {
 

@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --mode development",
-    "serve": "babel-node src/server/app.js",
-    "start": "npm run build & npm run serve",
-    "deploy": "webpack --mode production & babel src -d dist & node dist/server/app.js"
+    "regcomp": "node dist/common/components/componentLoader.js s",
+    "serve": "babel src -d dist & npm run regcomp & node dist/server/app.js",
+    "dev": "webpack --mode development & npm run serve",
+    "deploy": "webpack --mode production & npm run serve",
+    "start": "npm run dev"
   },
   "author": "maliut",
   "license": "MIT",

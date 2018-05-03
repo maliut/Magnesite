@@ -1,7 +1,6 @@
 const Component = require('../Component');
 const THREE = require('three');
 const Input = require('../Input');
-const ENV_CLIENT = !(typeof window === 'undefined');
 
 /**
  * 控制玩家第一人称行走

@@ -24,6 +24,11 @@ module.exports = {
             {
                 include: path.resolve(__dirname, './src/common/components/'),
                 loader: "babel-loader"
+            },
+            {
+                test: /^Component.js$/,
+                include: path.resolve(__dirname, './src/common/components/'),
+                loader: path.resolve(__dirname, './src/common/components/componentLoader.js')
             }
         ]
     },

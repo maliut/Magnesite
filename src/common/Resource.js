@@ -107,6 +107,7 @@ Resource.loadPrefab = function(name) {
             Resource['load' + data.objType.toUpperCase()](data.objName).then((obj) => {
                 obj.name = data.name;
                 let ret = new GameObject(obj);
+                //console.log(Component.serializedComponents);
                 data.components.forEach((comp) => {
                     let component = new Component.serializedComponents[comp.name]();
                     component.props = comp.props || {};
