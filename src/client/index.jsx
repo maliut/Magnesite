@@ -85,6 +85,12 @@ function createSelfPlayer(scene) {
     me.getComponent(Synchronizer).isLocalPlayer = true;
     me.addComponent(new FirstPersonController());
     me.add(createMouseControlCamera());
+
+    const StepTrigger = require('../common/components/StepTrigger');
+    scene.getObjectByName('btn0').getComponent(StepTrigger).authPlayers.push(me);
+    scene.getObjectByName('btn1').getComponent(StepTrigger).authPlayers.push(me);
+    scene.getObjectByName('moveLeft').getComponent(StepTrigger).authPlayers.push(me);
+    scene.getObjectByName('moveRight').getComponent(StepTrigger).authPlayers.push(me);
 }
 
 function createMouseControlCamera() {

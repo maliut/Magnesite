@@ -21,6 +21,11 @@ class GameObject {
             set: (value) => this.scene[ENV_CLIENT? 'serverState' : 'clientState'][this.networkId] = value
         });
 
+        Object.defineProperty(this, "serverState", {
+            get: () => this.scene['serverState'][this.networkId],
+            set: (value) => this.scene['serverState'][this.networkId] = value
+        });
+
         /**
          * 游戏物体所在的场景
          * @type {Scene}
@@ -158,8 +163,27 @@ class GameObject {
     /**
      * 物体被加入到场景中时回调
      */
-    onStart(scene) {
+    onAddToScene(scene) {
         this.scene = scene;
+        // 子物体递归调用 onstart
+        //console.log(this._obj3d.children);
+        //console.log(this.name, this.children, this._obj3d.children);
+        for (let child of this.children) {
+            if (!child) continue;
+            child.onAddToScene(scene);
+        }
+        // 保存相机用于渲染
+        //console.log(this._obj3d.name, this._obj3d.isCamera);
+        if (this._obj3d.isCamera) {
+            //console.log(this._obj3d.name, 'set camera');
+            scene._camera = this._obj3d;
+        }
+    }
+
+    /**
+     * 物体被加入到场景后回调
+     */
+    onStart() {
         // 自身组件 onstart
         this.components.forEach(value => {
             for (let i of value) {
@@ -173,13 +197,7 @@ class GameObject {
         //console.log(this.name, this.children, this._obj3d.children);
         for (let child of this.children) {
             if (!child) continue;
-            child.onStart(scene);
-        }
-        // 保存相机用于渲染
-        //console.log(this._obj3d.name, this._obj3d.isCamera);
-        if (this._obj3d.isCamera) {
-            //console.log(this._obj3d.name, 'set camera');
-            scene._camera = this._obj3d;
+            child.onStart();
         }
     }
 
@@ -216,7 +234,8 @@ class GameObject {
         this._obj3d.add(...gameObjects.map((o) => o._obj3d));
         // 已经在场景中，补充调用 onstart
         if (this.scene) {
-            gameObjects.forEach((obj) => obj.onStart(this.scene));
+            gameObjects.forEach((obj) => obj.onAddToScene(this.scene));
+            gameObjects.forEach((obj) => obj.onStart());
         }
     }
 

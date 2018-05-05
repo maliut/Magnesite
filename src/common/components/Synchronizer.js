@@ -49,7 +49,7 @@ class Synchronizer extends Component {
             //this.gameObject.position.add(this.velocity.clone().multiplyScalar(deltaTime));
             if (!ENV_CLIENT) {
                 // 服务端调用，收集自身数据，供游戏同步循环提供给客户端
-                this.gameObject.scene.serverState[this.gameObject.networkId] = {
+                this.gameObject.serverState = {
                     position: {x: this.gameObject.position.x, y: this.gameObject.position.y, z: this.gameObject.position.z},
                     velocity: {x: this.velocity.x, y: this.velocity.y, z: this.velocity.z},
                     timestamp: Date.now()

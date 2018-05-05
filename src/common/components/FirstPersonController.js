@@ -20,24 +20,24 @@ class FirstPersonController extends Component {
 
         this.tempPos = new THREE.Vector3();
 
-        this.props.speed = 0.1;
+        this.props.speed = 6;
     }
 
     destroy() {
         this.input.destroy();
     }
 
-    update() {
+    update(deltaTime) {
         this.yaw.rotation.y = this.input.getOrientation();
 
         if (this.input.getKey('W')) {
-            this.yaw.translateZ(-this.props.speed);
+            this.yaw.translateZ(-this.props.speed * deltaTime / 1000);
         } else if (this.input.getKey('S')) {
-            this.yaw.translateZ(this.props.speed);
+            this.yaw.translateZ(this.props.speed * deltaTime / 1000);
         } else if (this.input.getKey('A')) {
-            this.yaw.translateX(-this.props.speed);
+            this.yaw.translateX(-this.props.speed * deltaTime / 1000);
         } else if (this.input.getKey('D')) {
-            this.yaw.translateX(this.props.speed);
+            this.yaw.translateX(this.props.speed * deltaTime / 1000);
         }
 
         this.yaw.getWorldPosition(this.tempPos);

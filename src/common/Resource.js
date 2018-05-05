@@ -33,9 +33,12 @@ prefLoader.load = function (path, callback) {
 };
 prefLoader.setPath(PREFAB_PATH);
 
-const Resource = {};
-Resource.Model = {};
-Resource.Prefab = {};
+const Resource = {
+    Model: {},
+    Prefab: {}
+};
+//Resource.Model = {};
+//Resource.Prefab = {};
 
 /**
  * 加载 obj 格式模型
@@ -63,6 +66,7 @@ Resource.loadOBJ = function(name) {
             // 服务端不加载贴图
             parseTextInner(name + ".obj", objLoader, (obj) => {
                 Resource.Model[name] = obj;
+                //console.log(Resource.Model);
                 resolve(obj.clone());
             });
         }

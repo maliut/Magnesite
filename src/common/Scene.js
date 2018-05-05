@@ -44,8 +44,12 @@ class Scene {
         if (this._gameObjects.indexOf(gameobj) === -1) {
             this._gameObjects.push(gameobj);
             this._scene.add(gameobj._obj3d);
+            gameobj.onAddToScene(this);
+            // 事件循环结束时调用，确保所有对象已经加入场景
+            Promise.resolve().then(() => {
+                gameobj.onStart();
+            });
         }
-        gameobj.onStart(this);
     }
 
     /**
