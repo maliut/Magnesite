@@ -94,12 +94,11 @@ class Client {
         this.socket.on(event, callback);
     }
 
-    sendChatMessage() {
-        // todo
-    }
-
-    onSync(data) {
-        // 同步游戏状态
+    sendChatMessage(message) {
+        if (!this.roomId) return;
+        this.socket.emit(Event.CHAT_MESSAGE, {
+            message: message
+        });
     }
 }
 

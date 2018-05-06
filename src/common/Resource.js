@@ -37,9 +37,6 @@ const Resource = {
     Model: {},
     Prefab: {}
 };
-//Resource.Model = {};
-//Resource.Prefab = {};
-
 /**
  * 加载 obj 格式模型
  * @param name

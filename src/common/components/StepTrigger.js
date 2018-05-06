@@ -12,7 +12,7 @@ class StepTrigger extends Component {
 
     constructor() {
         super();
-        this.props.triggerRadius = 0.2;
+        this.props.triggerRadius = 0.3;
         this.props.selfHeight = 0.08;
         this.props.triggerType = 0;
 

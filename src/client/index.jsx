@@ -9,11 +9,7 @@ const GamePanel = require('./ui/GamePanel.jsx');
 const Client = require('./Client');
 const Game = require('./Game');
 const Scene = require('../common/Scene');
-const Synchronizer = require('../common/components/Synchronizer');
-const FirstPersonController = require('../common/components/FirstPersonController');
-const MouseControlRotation = require('../common/components/MouseControlRotation');
-const THREE = require('three');
-const GameObject = require('../common/GameObject');
+const SceneHelper = require('./SceneHelper');
 const loadScene = require('../common/loadScene');
 
 class App extends React.Component {
@@ -50,9 +46,9 @@ class App extends React.Component {
             // 场景静态物体
             arr.forEach((obj) => {scene.add(obj)});
             // 生成自身
-            createSelfPlayer(scene);
+            SceneHelper.createSelfPlayer(scene);
             // 其余玩家
-            room.existPlayers.forEach((id) => scene.spawn('player').networkId = id);
+            room.existPlayers.forEach((data) => SceneHelper.createOtherPlayer(scene, data.networkId, data.name));
             this.game.scene = scene;
             this.game.start();
             this.setState({progress: 100});
@@ -78,37 +74,3 @@ class App extends React.Component {
 }
 
 ReactDOM.render(<App/>, document.body);
-
-function createSelfPlayer(scene) {
-    let me = scene.spawn('player');
-    me.networkId = Client.current.socket.id;
-    me.getComponent(Synchronizer).isLocalPlayer = true;
-    me.addComponent(new FirstPersonController());
-    me.add(createMouseControlCamera());
-
-    const StepTrigger = require('../common/components/StepTrigger');
-    scene.getObjectByName('btn0').getComponent(StepTrigger).authPlayers.push(me);
-    scene.getObjectByName('btn1').getComponent(StepTrigger).authPlayers.push(me);
-    scene.getObjectByName('moveLeft').getComponent(StepTrigger).authPlayers.push(me);
-    scene.getObjectByName('moveRight').getComponent(StepTrigger).authPlayers.push(me);
-}
-
-function createMouseControlCamera() {
-    let camera = new THREE.PerspectiveCamera(75, /*window.innerWidth / window.innerHeight - 64*/1, 0.1, 1000);
-    camera.position.y = 2.5;
-    camera.position.z = 8;
-    var pointLight = new THREE.PointLight(0xffffff, 0.8);
-    camera.add(pointLight);
-    camera.name = 'camera';
-    //camera.lookAt(0, 0, -4);
-    let pitch = new GameObject(new THREE.Object3D());
-    pitch.add(new GameObject(camera));
-    let yaw = new GameObject(new THREE.Object3D());
-    yaw.name = 'yaw';
-    pitch.name = 'pitch';
-    yaw.add(pitch);
-
-    let mouseControlObj = yaw;
-    mouseControlObj.addComponent(new MouseControlRotation());
-    return mouseControlObj;
-}

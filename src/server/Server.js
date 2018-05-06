@@ -13,6 +13,7 @@ class Server {
     /*
      * 一个 socket 对应了一个已经登录的玩家，自定义属性：
      * socket.room - socket 当前加入的房间
+     * socket.username - 对应的用户名（启用 nickname 可以替换成 user 对象）
      *
      * room 对象的定义：
      * - id - 随机 id
@@ -25,6 +26,7 @@ class Server {
     constructor(io) {
         this.io = io;
         this.rooms = new Map();   // id => room
+        this.onlineUsers = new Set();
     }
 
     /**
@@ -32,10 +34,12 @@ class Server {
      * @param socket
      */
     addClient(socket) {
+        this.onlineUsers.add(socket.username);
         // 客户端掉线，退出房间
         socket.on('disconnect', () => {
             console.log("socket disconnect:" + socket.id);
             this.leaveRoom(socket);   // 退出房间
+            this.onlineUsers.delete(socket.username);
         });
         // 客户端登出事件
         socket.on(Event.CLIENT_LOGOUT, () => {
@@ -71,12 +75,25 @@ class Server {
             let retdata = {ret: this.joinRoom(socket, data)};
             if (retdata.ret === 0) {    // 返回现有玩家
                 retdata.roomId = socket.room.id;
-                retdata.existPlayers = socket.room.players.map((socket) => socket.id);
-                retdata.existPlayers.remove(socket.id);
+                retdata.existPlayers = socket.room.players.map((s) => {
+                    return s.id === socket.id ? undefined : ({
+                        networkId: s.id,
+                        name: s.username
+                    });
+                });
+                retdata.existPlayers.remove(undefined);
 
                 // 接收客户端状态
                 socket.on(Event.CLIENT_SEND_STATE, (data) => {
                     socket.room.game.onPlayerState(socket, data);
+                });
+
+                // 聊天
+                socket.on(Event.CHAT_MESSAGE, (data) => {
+                    this.io.in(socket.room.id).emit(Event.CHAT_MESSAGE, {
+                        name: socket.username,
+                        message: data.message
+                    });
                 });
             }
             socket.emit(Event.CLIENT_JOIN_ROOM, retdata);
@@ -151,6 +168,7 @@ class Server {
         room.game.scene.getObjectByName('moveRight').getComponent(StepTrigger).authPlayers.push(player);
         this.io.in(room.id).emit(Event.SERVER_SPAWN, {
             id: socket.id,
+            ext2: socket.username,
             prefab: 'player'
         });
         return 0;

@@ -30,8 +30,12 @@ app.post('/login', (req, res) => {
         return;
     }
     let { username, password } = data;
-    // todo 判断重复登录
     User.validate(username, password).then(() => {
+        // 判断重复登录
+        if (gameSvr.onlineUsers.has(username)) {
+            res.json({ code: 3, message: "不能重复登录！"});
+            return;
+        }
         let token = loginGameServer(username, password);
         res.json({ code: 0, token: token, username: username });
     }).catch(() => {
@@ -64,13 +68,23 @@ io.set('authorization', socketioJwt.authorize({
     handshake: true
 }));
 
+io.use(function (socket, next) {
+    //console.log(socket.handshake.query.token);
+    socket.username = tokenUserMap[socket.handshake.query.token];
+    return next();
+});
+
 const gameSvr = new Server(io);
 io.on('connection', (socket) => {
     gameSvr.addClient(socket);
 });
 
+// token-username mapping
+const tokenUserMap = {};
 function loginGameServer(username, password) {
-    return jwt.sign({username: username, password: password}, JWT_SECRET, { expiresIn: '5h' });
+    let token = jwt.sign({username: username, password: password}, JWT_SECRET, { expiresIn: '5h' });
+    tokenUserMap[token] = username;
+    return token;
 }
 
 

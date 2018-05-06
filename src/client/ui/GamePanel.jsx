@@ -21,9 +21,11 @@ class GamePanel extends React.Component {
         document.addEventListener( 'pointerlockchange', this.onPointerLockChange, false );
         // 订阅服务端的消息
         Client.current.subscribe(Event.SERVER_SPAWN, (data) => {
-            //console.log(data);
-            let gameObject = this.props.game.scene.spawn(data.prefab);
-            gameObject.networkId = data.id;
+            if (data.ext2) {    // spawn other player
+                require('../SceneHelper').createOtherPlayer(this.props.game.scene, data.id, data.ext2);
+            } else {
+                this.props.game.scene.spawn(data.prefab).networkId = data.id;
+            }
         });
         Client.current.subscribe(Event.SERVER_SEND_STATE, (data) => {
             //console.log(data);
@@ -69,6 +71,11 @@ class GamePanel extends React.Component {
                         <span style={{width: '100%', cursor: 'pointer'}}>Click to play</span>
                     </div>
                 }
+                <div style={{display: 'flex', flexDirection: 'column-reverse', width: 200, height: 100,
+                    position: 'absolute', left: 10, bottom: 40}} id={'chatPanel'}>
+                </div>
+                <input type="text" id={'chatInput'} style={{position: 'absolute', left: 10, bottom: 10,
+                    backgroundColor: 'rgba(0,0,0,0)', border: 'rgba(0,0,0,0)', color: 'white'}} />
             </div>
         )
     }

@@ -18,9 +18,9 @@ module.exports = {
     // server 发起
     SERVER_SPAWN: 'spawn',
     SERVER_SEND_STATE: 'serverState',
-    SERVER_DESTROY: 'destroy'
+    SERVER_DESTROY: 'destroy',
 
-    //CHAT_MESSAGE: 'chatMessage'
+    CHAT_MESSAGE: 'chatMessage'
 
 };
 // create roomId

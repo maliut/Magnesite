@@ -1,6 +1,6 @@
 const Component = require('../Component');
 const THREE = require('three');
-const Input = require('../Input');
+const Input = require('../../client/Input');
 
 /**
  * 控制玩家第一人称行走
@@ -15,28 +15,30 @@ class FirstPersonController extends Component {
         this.yaw.position.set(p.x, p.y, p.z);
         this.gameObject._obj3d.add(this.yaw);
 
-        this.input = new Input();
-        this.input._yaw = this.yaw;
+        document.addEventListener('mousemove', this._onMouseMove.bind(this), false);
 
         this.tempPos = new THREE.Vector3();
+        this.chatInputDomElement = document.getElementById('chatInput');
 
         this.props.speed = 6;
     }
 
     destroy() {
-        this.input.destroy();
+        //this.input.destroy();
+        document.removeEventListener('mousemove', this._onMouseMove.bind(this), false);
     }
 
     update(deltaTime) {
-        this.yaw.rotation.y = this.input.getOrientation();
+        if (getPointerLockElement() === undefined) return;
+        if (document.hasFocus() && document.activeElement === this.chatInputDomElement) return;
 
-        if (this.input.getKey('W')) {
+        if (Input.getKey('W')) {
             this.yaw.translateZ(-this.props.speed * deltaTime / 1000);
-        } else if (this.input.getKey('S')) {
+        } else if (Input.getKey('S')) {
             this.yaw.translateZ(this.props.speed * deltaTime / 1000);
-        } else if (this.input.getKey('A')) {
+        } else if (Input.getKey('A')) {
             this.yaw.translateX(-this.props.speed * deltaTime / 1000);
-        } else if (this.input.getKey('D')) {
+        } else if (Input.getKey('D')) {
             this.yaw.translateX(this.props.speed * deltaTime / 1000);
         }
 
@@ -46,6 +48,13 @@ class FirstPersonController extends Component {
         this.yaw.position.set(0, 0, 0);
     }
 
+
+    _onMouseMove(event) {
+        if (getPointerLockElement() !== document.body) return;
+        let x = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
+        //let y = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
+        this.yaw.rotation.y -= x * 1 / 1000;
+    }
 }
 
 module.exports = FirstPersonController;
