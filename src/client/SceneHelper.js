@@ -25,6 +25,25 @@ module.exports = {
         let other = scene.spawn('player');
         other.networkId = networkId;
         other._obj3d.add(createSpriteText(name));
+    },
+
+    createSkyBox: function (scene, urls, size) {
+        let skyboxCubemap = new THREE.CubeTextureLoader().load(urls);
+        skyboxCubemap.format = THREE.RGBFormat;
+
+        let skyboxShader = THREE.ShaderLib['cube'];
+        skyboxShader.uniforms['tCube'].value = skyboxCubemap;
+
+        scene._scene.add(new THREE.Mesh(
+            new THREE.BoxGeometry(size, size, size),
+            new THREE.ShaderMaterial({
+                fragmentShader : skyboxShader.fragmentShader,
+                vertexShader : skyboxShader.vertexShader,
+                uniforms : skyboxShader.uniforms,
+                depthWrite : false,
+                side : THREE.BackSide
+            })
+        ));
     }
 
 

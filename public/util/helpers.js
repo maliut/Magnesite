@@ -58,6 +58,10 @@ Array.prototype.remove = function(val) {
     }
 };
 
+Math.clamp = function (value, min, max) {
+    return Math.max(min, Math.min(max, value));
+}
+
 // meta.js es6 ployfill
 Object.defineProperty(Object.prototype, "class", {
     get: function() {

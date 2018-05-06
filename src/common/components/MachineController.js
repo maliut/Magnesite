@@ -8,10 +8,8 @@ class MachineController extends Component {
 
     constructor() {
         super();
-        this.props.velocity = 5;
-        this.props.moveStep = 1;
 
-        this.props.cooldown = 10;
+        this.props.cooldown = 10;   // 按钮冷却帧数
     }
 
     start() {
@@ -19,16 +17,16 @@ class MachineController extends Component {
         this.cooldown = 0;
 
         // 描述当前状态的变量
-        this.state = { content: '0000000000000', pointer: 6 };
+        this.state = { content: '000000000000000', pointer: 7 };
 
         // initial state
         CharPool.init(this.gameObject);
         this.children = [];
-        for (let i = -6; i <= 6; i++) {
+        for (let i = -7; i <= 7; i++) {
             let bit = CharPool.obtain('0');
             bit.position.x = i;
             bit.visible = true;
-            this.children[i+6] = bit;
+            this.children[i+7] = bit;
         }
     }
 
@@ -45,8 +43,6 @@ class MachineController extends Component {
     moveLeft() {
         if (this.cooldown > 0) return;
         this.cooldown += this.props.cooldown;
-        //this.moveTarget = this.gameObject.position.x - this.props.moveStep;
-        //this.moveDirection = -1;
 
         if (this.state.pointer > 0) {
             this.state.pointer--;
@@ -85,8 +81,8 @@ class MachineController extends Component {
             // 服务端发送同步信息
             this.gameObject.serverState = this.state;
         }
-        for (let i = 0; i < 13; i++) {
-            let index = this.state.pointer - (6 - i);
+        for (let i = 0; i < 15; i++) {
+            let index = this.state.pointer - (7 - i);
             let char = '0';
             if (index >= 0 && index < this.state.content.length) {
                 char = this.state.content.charAt(index);
@@ -94,7 +90,7 @@ class MachineController extends Component {
             if (this.children[i].name !== 'char' + char) {
                 CharPool.recycle(this.children[i]);
                 this.children[i] = CharPool.obtain(char);
-                this.children[i].position.x = i - 6;
+                this.children[i].position.x = i - 7;
                 this.children[i].visible = true;
             }
         }

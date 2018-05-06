@@ -45,6 +45,8 @@ class App extends React.Component {
             let scene = new Scene();
             // 场景静态物体
             arr.forEach((obj) => {scene.add(obj)});
+            SceneHelper.createSkyBox(scene, ['images/galaxy+X.jpg', 'images/galaxy-X.jpg', 'images/galaxy+Y.jpg',
+                'images/galaxy-Y.jpg', 'images/galaxy-Z.jpg', 'images/galaxy+Z.jpg'], 75);
             // 生成自身
             SceneHelper.createSelfPlayer(scene);
             // 其余玩家

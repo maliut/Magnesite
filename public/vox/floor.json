@@ -7,9 +7,9 @@
   "geometries": [{
     "uuid": "EAF4CC4D-296A-4175-8B28-249E24DD0EDA",
     "type": "BoxGeometry",
-    "width": 20,
+    "width": 16,
     "height": 0.4,
-    "depth": 20
+    "depth": 16
   }],
   "materials": [{
     "uuid": "A01AF644-EABC-4262-9EC5-660FF413B3B2",

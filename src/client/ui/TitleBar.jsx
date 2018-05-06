@@ -7,7 +7,7 @@ class TitleBar extends React.Component {
     render() {
         return (
             <AppBar
-                title={'title'}
+                title={'教学平台'}
                 showMenuIconButton={false}
                 iconElementRight={<Info user={this.props.user} onLogout={this.props.onLogout}/>}
             />

@@ -9,6 +9,12 @@ const Input = require('../../client/Input');
 @Component.serializedName('FirstPersonController')
 class FirstPersonController extends Component {
 
+    constructor() {
+        super();
+        this.props.speed = 6;
+        this.props.mapBorder = {xMax: 8, xMin: -8, zMax: 8, zMin: -8};
+    }
+
     start() {
         this.yaw = new THREE.Object3D();
         let p = this.gameObject.position;
@@ -19,8 +25,6 @@ class FirstPersonController extends Component {
 
         this.tempPos = new THREE.Vector3();
         this.chatInputDomElement = document.getElementById('chatInput');
-
-        this.props.speed = 6;
     }
 
     destroy() {
@@ -43,8 +47,8 @@ class FirstPersonController extends Component {
         }
 
         this.yaw.getWorldPosition(this.tempPos);
-        this.gameObject.position.x = this.tempPos.x;
-        this.gameObject.position.z = this.tempPos.z;
+        this.gameObject.position.x = Math.clamp(this.tempPos.x, this.props.mapBorder.xMin, this.props.mapBorder.xMax);
+        this.gameObject.position.z = Math.clamp(this.tempPos.z, this.props.mapBorder.zMin, this.props.mapBorder.zMax);
         this.yaw.position.set(0, 0, 0);
     }
 
