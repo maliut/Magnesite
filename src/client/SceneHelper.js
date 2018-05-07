@@ -19,6 +19,7 @@ module.exports = {
         scene.getObjectByName('btn1').getComponent(StepTrigger).authPlayers.push(me);
         scene.getObjectByName('moveLeft').getComponent(StepTrigger).authPlayers.push(me);
         scene.getObjectByName('moveRight').getComponent(StepTrigger).authPlayers.push(me);
+        scene.getObjectByName('btne').getComponent(StepTrigger).authPlayers.push(me);
     },
 
     createOtherPlayer: function (scene, networkId, name) {

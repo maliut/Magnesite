@@ -21,7 +21,7 @@ module.exports = function () {
                 let container = new GameObject(new THREE.Object3D());
                 container.networkId = container.name = 'TuringMachine';
                 container.addComponent(new MachineController());
-                Promise.all([Resource.loadOBJ('char_0'), Resource.loadOBJ('char_1')]).then(() => {
+                Promise.all([Resource.loadOBJ('char_0'), Resource.loadOBJ('char_1'), Resource.loadOBJ('char_e')]).then(() => {
                     //console.log("resmodel", Resource.Model);
                     resolve(container);
                 });
@@ -55,7 +55,7 @@ module.exports = function () {
                     obj.scale.z = 0.1;
                     obj.position.y = 0.1;
                     obj.position.z = 2;
-                    obj.position.x = 0.5;
+                    obj.position.x = 1;
                     obj.rotation.y -= Math.PI / 2;
                     let ret = new GameObject(obj);
                     ret.name = 'btn0';
@@ -74,13 +74,33 @@ module.exports = function () {
                     obj.scale.z = 0.1;
                     obj.position.y = 0.1;
                     obj.position.z = 2;
-                    obj.position.x = 1.5;
+                    obj.position.x = 2;
                     obj.rotation.y -= Math.PI / 2;
                     let ret = new GameObject(obj);
                     ret.name = 'btn1';
                     //ret.networkId = ret.name;
                     let trigger = new StepTrigger();
                     trigger.props.triggerType = 1;
+                    ret.addComponent(trigger);
+                    resolve(ret);
+                });
+            });
+
+            let btne = new Promise(function (resolve) {
+                Resource.loadOBJ('btn_e').then((obj) => {
+                    obj.scale.x = 0.1;
+                    obj.scale.y = 0.1;
+                    obj.scale.z = 0.1;
+                    obj.position.y = 0.1;
+                    obj.position.z = 2;
+                    obj.position.x = 0;
+                    obj.rotation.y -= Math.PI / 2;
+
+                    let ret = new GameObject(obj);
+                    ret.name = 'btne';
+                    //ret.networkId = ret.name;
+                    let trigger = new StepTrigger();
+                    trigger.props.triggerType = 4;
                     ret.addComponent(trigger);
                     resolve(ret);
                 });
@@ -95,7 +115,7 @@ module.exports = function () {
                     obj.position.z = 2;
 
                     let left = obj;
-                    left.position.x = -1.5;
+                    left.position.x = -2;
                     left.rotation.y -= Math.PI / 2;
                     let ret = new GameObject(obj);
                     ret.name = 'moveRight';
@@ -117,7 +137,7 @@ module.exports = function () {
                     obj.position.z = 2;
 
                     let right = obj;
-                    right.position.x = -0.5;
+                    right.position.x = -1;
                     right.rotation.y += Math.PI / 2;
                     let ret = new GameObject(obj);
                     ret.name = 'moveLeft';
@@ -136,7 +156,7 @@ module.exports = function () {
                 resolve(o);
             });
 
-            Promise.all([ambientLight, container, floor, arrow, btn0, btn1, moveLeft, moveRight, chatManager]).then((arr) => {
+            Promise.all([ambientLight, container, floor, arrow, btn0, btn1, moveLeft, moveRight, chatManager, btne]).then((arr) => {
                 resolve(arr);
             });
         });

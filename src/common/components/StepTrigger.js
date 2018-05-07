@@ -65,6 +65,9 @@ class StepTrigger extends Component {
             case 3:
                 this.machineController.moveRight();
                 break;
+            case 4:
+                this.machineController.setChar('e');
+                break;
         }
     }
 

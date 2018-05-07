@@ -17,13 +17,13 @@ class MachineController extends Component {
         this.cooldown = 0;
 
         // 描述当前状态的变量
-        this.state = { content: '000000000000000', pointer: 7 };
+        this.state = { content: 'eeeeeeeeeeeeeee', pointer: 7 };
 
         // initial state
         CharPool.init(this.gameObject);
         this.children = [];
         for (let i = -7; i <= 7; i++) {
-            let bit = CharPool.obtain('0');
+            let bit = CharPool.obtain('e');
             bit.position.x = i;
             bit.visible = true;
             this.children[i+7] = bit;
@@ -47,7 +47,7 @@ class MachineController extends Component {
         if (this.state.pointer > 0) {
             this.state.pointer--;
         } else {
-            this.state.content = '0' + this.state.content;
+            this.state.content = 'e' + this.state.content;
         }
         this.repaint();
 
@@ -60,7 +60,7 @@ class MachineController extends Component {
         if (this.state.pointer < this.state.content.length - 1) {
             this.state.pointer++;
         } else {
-            this.state.content = this.state.content + '0';
+            this.state.content = this.state.content + 'e';
         }
         this.repaint();
     }
@@ -83,7 +83,7 @@ class MachineController extends Component {
         }
         for (let i = 0; i < 15; i++) {
             let index = this.state.pointer - (7 - i);
-            let char = '0';
+            let char = 'e';
             if (index >= 0 && index < this.state.content.length) {
                 char = this.state.content.charAt(index);
             }
@@ -102,6 +102,7 @@ module.exports = MachineController;
 const CharPool = {
     char0 : [],
     char1 : [],
+    chare : [],
     container: null,
 
     init: (container) => {

@@ -68,7 +68,7 @@ class GamePanel extends React.Component {
                         width: '100%', height: '100%', color: '#fff', textAlign: 'center',
                         display: 'flex', alignItems: 'center'}}
                          ref={(mount) => { this.instruction = mount }}>
-                        <span style={{width: '100%', cursor: 'pointer'}}>Click to play</span>
+                        <span style={{width: '100%', cursor: 'pointer'}}>点击鼠标开始<br/>鼠标移动控制视角，WASD移动，按回车对话</span>
                     </div>
                 }
                 <div style={{display: 'flex', flexDirection: 'column-reverse', width: 200, height: 100,

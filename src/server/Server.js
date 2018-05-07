@@ -166,6 +166,7 @@ class Server {
         room.game.scene.getObjectByName('btn1').getComponent(StepTrigger).authPlayers.push(player);
         room.game.scene.getObjectByName('moveLeft').getComponent(StepTrigger).authPlayers.push(player);
         room.game.scene.getObjectByName('moveRight').getComponent(StepTrigger).authPlayers.push(player);
+        room.game.scene.getObjectByName('btne').getComponent(StepTrigger).authPlayers.push(player);
         this.io.in(room.id).emit(Event.SERVER_SPAWN, {
             id: socket.id,
             ext2: socket.username,
