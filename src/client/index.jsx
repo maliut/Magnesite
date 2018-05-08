@@ -39,12 +39,7 @@ class App extends React.Component {
     onJoinRoom(room) {
         this.game = new Game();
         this.setState({room: room, progress: 0});
-        // fixme index 里面嵌了太多 game 的逻辑
-        // 要重构加载 scene 的逻辑
-        loadScene().then((arr) => {
-            let scene = new Scene();
-            // 场景静态物体
-            arr.forEach((obj) => {scene.add(obj)});
+        require('../common/Resource').loadScene('turingmachine').then(scene => {
             SceneHelper.createSkyBox(scene, ['images/galaxy+X.jpg', 'images/galaxy-X.jpg', 'images/galaxy+Y.jpg',
                 'images/galaxy-Y.jpg', 'images/galaxy-Z.jpg', 'images/galaxy+Z.jpg'], 75);
             // 生成自身

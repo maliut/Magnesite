@@ -44,11 +44,13 @@ Component.serializedComponents = {};
 // decorator
 Component.serializedName = function(name) {
     return function(target) {
+        //console.log("reg:" + name);
         Component.serializedComponents[name] = target;
     }
 };
 
 Component.clientOnly = function (target) {
+    //console.log("clientOnly:" + target.class);
     target.isClientOnly = true;
 };
 

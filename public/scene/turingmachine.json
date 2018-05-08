@@ -1,0 +1,188 @@
+{
+  "prefabs": ["player", "char_0", "char_1", "char_e"],
+  "objects": [{
+      "objType": "json",
+      "objName": "light",
+      "name": "light",
+      "components": []
+    },
+    {
+      "objType": "json",
+      "objName": "floor",
+      "name": "floor",
+      "position": [0, -0.1, 0],
+      "components": []
+    },
+    {
+      "objType": "empty",
+      "objName": "empty",
+      "name": "TuringMachine",
+      "networkId": "TuringMachine",
+      "components": [{
+        "name": "MachineController",
+        "props": {
+          "cooldown": 10
+        }
+      }]
+    },
+    {
+      "objType": "obj",
+      "objName": "arrow",
+      "name": "arrow",
+      "position": [0, 0.1, 1],
+      "rotation": [0, -1.5707963267948966, 0],
+      "scale": [0.1, 0.1, 0.1],
+      "components": []
+    },
+    {
+      "objType": "obj",
+      "objName": "btn_0",
+      "name": "btn0",
+      "position": [1, 0.1, 2],
+      "rotation": [0, -1.5707963267948966, 0],
+      "scale": [0.1, 0.1, 0.1],
+      "components": [
+        {
+          "name": "StepTrigger",
+          "props": {
+            "triggerRadius": 0.3,
+            "selfHeight": 0.08
+          }
+        },
+        {
+          "name": "MachineTrigger",
+          "props": {
+            "triggerType": 0
+          }
+        }
+      ]
+    },
+    {
+      "objType": "obj",
+      "objName": "btn_1",
+      "name": "btn1",
+      "position": [2, 0.1, 2],
+      "rotation": [0, -1.5707963267948966, 0],
+      "scale": [0.1, 0.1, 0.1],
+      "components": [
+        {
+          "name": "StepTrigger",
+          "props": {
+            "triggerRadius": 0.3,
+            "selfHeight": 0.08
+          }
+        },
+        {
+          "name": "MachineTrigger",
+          "props": {
+            "triggerType": 1
+          }
+        }
+      ]
+    },
+    {
+      "objType": "obj",
+      "objName": "btn_e",
+      "name": "btnxor",
+      "position": [5, 0.1, 2],
+      "rotation": [0, -1.5707963267948966, 0],
+      "scale": [0.1, 0.1, 0.1],
+      "components": [
+        {
+          "name": "StepTrigger",
+          "props": {
+            "triggerRadius": 0.3,
+            "selfHeight": 0.08
+          }
+        },
+        {
+          "name": "MachineTrigger",
+          "props": {
+            "triggerType": 5
+          }
+        }
+      ]
+    },
+    {
+      "objType": "obj",
+      "objName": "btn_e",
+      "name": "btne",
+      "position": [0, 0.1, 2],
+      "rotation": [0, -1.5707963267948966, 0],
+      "scale": [0.1, 0.1, 0.1],
+      "components": [
+        {
+          "name": "StepTrigger",
+          "props": {
+            "triggerRadius": 0.3,
+            "selfHeight": 0.08
+          }
+        },
+        {
+          "name": "MachineTrigger",
+          "props": {
+            "triggerType": 4
+          }
+        }
+      ]
+    },
+    {
+      "objType": "obj",
+      "objName": "move",
+      "name": "moveRight",
+      "position": [-2, 0.1, 2],
+      "rotation": [0, -1.5707963267948966, 0],
+      "scale": [0.1, 0.1, 0.1],
+      "components": [
+        {
+          "name": "StepTrigger",
+          "props": {
+            "triggerRadius": 0.3,
+            "selfHeight": 0.08
+          }
+        },
+        {
+          "name": "MachineTrigger",
+          "props": {
+            "triggerType": 3
+          }
+        }
+      ]
+    },
+    {
+      "objType": "obj",
+      "objName": "move",
+      "name": "moveLeft",
+      "position": [-1, 0.1, 2],
+      "rotation": [0, 1.5707963267948966, 0],
+      "scale": [0.1, 0.1, 0.1],
+      "components": [
+        {
+          "name": "StepTrigger",
+          "props": {
+            "triggerRadius": 0.3,
+            "selfHeight": 0.08
+          }
+        },
+        {
+          "name": "MachineTrigger",
+          "props": {
+            "triggerType": 2
+          }
+        }
+      ]
+    },
+    {
+      "objType": "empty",
+      "objName": "empty",
+      "name": "chatManager",
+      "components": [{
+        "name": "ChatManager",
+        "props": {
+          "cooldown": 10,
+          "messageLife": 5000
+        }
+      }]
+    }
+  ]
+}

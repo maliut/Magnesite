@@ -2,6 +2,7 @@ const Component = require('../Component');
 const MachineController = require('./MachineController');
 const ENV_CLIENT = !(typeof window === 'undefined');
 
+@Component.serializedName("MachineTrigger")
 class MachineTrigger extends Component {
 
     constructor() {

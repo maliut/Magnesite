@@ -55,12 +55,7 @@ class Server {
             room.game = new Game();
             room.game.syncMethod = this.updateRoom(room.id);
             // 根据游戏类型 load 不同的 scene
-            loadScene().then((arr) => {
-                let scene = new Scene();
-                for (let i = 0; i < arr.length; i++) {
-                    scene.add(arr[i]);
-                }
-                //arr.forEach((obj) => {scene.add(obj)});
+            Resource.loadScene('turingmachine').then(scene => {
                 room.game.scene = scene;
                 room.game.start();
                 socket.emit(Event.CLIENT_CREATE_ROOM, {

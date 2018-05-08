@@ -10,10 +10,11 @@ module.exports = function () {
 
     return new Promise(function (resolve) {
         // load all prefab
-        Resource.loadPrefab('player').then(() => {
+        Promise.all([Resource.loadPrefab('player'), Resource.loadPrefab('char_0'), Resource.loadPrefab('char_1'), Resource.loadPrefab('char_e')])
+        .then(() => {
 
             // create static scene
-            let ambientLight = new Promise(function (resolve) {
+            /*let ambientLight = new Promise(function (resolve) {
                 let ambientLight = new THREE.AmbientLight(0xcccccc, 0.4);
                 resolve(new GameObject(ambientLight));
             });
@@ -22,10 +23,10 @@ module.exports = function () {
                 let container = new GameObject(new THREE.Object3D());
                 container.networkId = container.name = 'TuringMachine';
                 container.addComponent(new MachineController());
-                Promise.all([Resource.loadOBJ('char_0'), Resource.loadOBJ('char_1'), Resource.loadOBJ('char_e')]).then(() => {
+                //Promise.all([Resource.loadOBJ('char_0'), Resource.loadOBJ('char_1'), Resource.loadOBJ('char_e')]).then(() => {
                     //console.log("resmodel", Resource.Model);
                     resolve(container);
-                });
+                //});
 
             });
 
@@ -152,7 +153,7 @@ module.exports = function () {
                     resolve(ret);
 
                 });
-            });
+            });*/
 
             let moveRight = new Promise(function (resolve) {
                 Resource.loadOBJ('move').then((obj) => {

@@ -1,6 +1,6 @@
 const Component = require('../Component');
 //const Resource = require('../Resource');
-const GameObject = require('../GameObject');
+//const GameObject = require('../GameObject');
 const ENV_CLIENT = !(typeof window === 'undefined');
 
 @Component.serializedName('MachineController')
@@ -220,7 +220,6 @@ class CharPool {
         this.char1 = [];
         this.chare = [];
         this.container = container;
-        //this.Resource = require('../Resource');
     }
 
     obtain(char) {
@@ -234,19 +233,11 @@ class CharPool {
     }
 
     createNew(char) {
-        let obj = require('../Resource').Model['char_' + char].clone();
-        obj.scale.x = 0.1;
-        obj.scale.y = 0.1;
-        obj.scale.z = 0.1;
-        obj.position.y = 0.5;
-        obj.rotation.y -= Math.PI / 2;
-        obj.rotation.z -= Math.PI / 3;
-        obj.visible = false;
-        let go = new GameObject(obj);
-        go.name = 'char' + char;
-        this['char' + char].push(go);
-        this.container.add(go);
-        return go;
+        let gameObj = require('../Resource').Prefab['char_' + char].clone();
+        gameObj.visible = false;
+        this['char' + char].push(gameObj);
+        this.container.add(gameObj);
+        return gameObj;
     }
 
     recycle(gameObj) {

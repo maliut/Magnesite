@@ -2,6 +2,9 @@
   "objType": "json",
   "objName": "player",
   "name": "player",
+  "position": [0, 0.5, 3],
+  "rotation": [0, 0, 0],
+  "scale": [1, 1, 1],
   "components": [{
     "name": "Synchronizer",
     "props": {

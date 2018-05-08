@@ -2,12 +2,14 @@ const THREE = require('three');
 const MTLLoader = require('three-mtl-loader');
 const GameObject = require('./GameObject');
 const Component = require('./Component');
+const Scene = require('./Scene');
 require('three-obj-loader')(THREE);
 const ENV_CLIENT = !(typeof window === 'undefined');
 const fs = ENV_CLIENT ? undefined : require('fs');
 
 const MODEL_PATH = 'vox/';
 const PREFAB_PATH = 'pref/';
+const SCENE_PATH = 'scene/';
 
 // mtl 加载器
 const mtlLoader = new MTLLoader();
@@ -33,17 +35,32 @@ prefLoader.load = function (path, callback) {
 };
 prefLoader.setPath(PREFAB_PATH);
 
+// scene 数据加载器
+const sceneLoader = new THREE.FileLoader();
+sceneLoader.oldLoad = sceneLoader.load;
+sceneLoader.parse = (data) => JSON.parse(data);
+sceneLoader.load = function (path, callback) {
+    sceneLoader.oldLoad(path, (data) => {
+        callback(sceneLoader.parse(data));
+    });
+};
+sceneLoader.setPath(SCENE_PATH);
+
 const Resource = {
     Model: {},
     Prefab: {}
 };
+
+// =================================
+// 加载模型 start
+// =================================
 /**
  * 加载 obj 格式模型
  * @param name
  * @returns {Promise}
  */
 Resource.loadOBJ = function(name) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function(resolve) {
         // cache
         if (Resource.Model[name]) {
             resolve(Resource.Model[name].clone());
@@ -76,7 +93,7 @@ Resource.loadOBJ = function(name) {
  * @returns {Promise<any>}
  */
 Resource.loadJSON = function(name) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function(resolve) {
         // cache
         if (Resource.Model[name]) {
             resolve(Resource.Model[name].clone());
@@ -89,6 +106,22 @@ Resource.loadJSON = function(name) {
         });
     });
 };
+
+/**
+ * 生成空物体
+ * @returns {Promise<any>}
+ */
+Resource.loadEMPTY = function () {
+    return new Promise(function (resolve) {
+        resolve(new THREE.Object3D());
+    })
+};
+
+// =================================
+// 加载模型 end
+// =================================
+// 加载自定义数据格式 start
+// =================================
 
 /**
  * 加载 prefab
@@ -104,24 +137,42 @@ Resource.loadPrefab = function(name) {
         }
         // load from pref
         parseTextInner(name + '.json', prefLoader, (data) => {
-            console.log(typeof data);
-            Resource['load' + data.objType.toUpperCase()](data.objName).then((obj) => {
-                obj.name = data.name;
-                let ret = new GameObject(obj);
-                //console.log(Component.serializedComponents);
-                data.components.forEach((comp) => {
-                    let component = new Component.serializedComponents[comp.name]();
-                    component.props = comp.props || {};
-                    ret.addComponent(component);
-                });
-                postProcess(name, obj);
-                Resource.Prefab[name] = ret;
-                console.log("load player success!");
-                resolve(ret.clone());
+            parseGameObjectInner(data).then((obj) => {
+                Resource.Prefab[name] = obj;
+                resolve(obj.clone());
             });
         });
     });
 };
+
+Resource.loadScene = function(name) {
+    //const Scene = require('./Scene');
+    //let scene = new Scene();
+    return new Promise(function(resolve) {
+        parseTextInner(name + '.json', sceneLoader, (data) => {
+            const Scene = require('./Scene');
+            let scene = new Scene();
+            // 加载 prefab
+            let requiredPrefabs = [];
+            data.prefabs.forEach((prefname) => requiredPrefabs.push(Resource.loadPrefab(prefname)));
+            Promise.all(requiredPrefabs).then(() => {
+                // 加载场景中对象
+                let gameObjects = [];
+                data.objects.forEach(json => gameObjects.push(json.prefab ? Resource.loadPrefab(json.prefab) : parseGameObjectInner(json)));
+                Promise.all(gameObjects).then(arr => {
+                    arr.forEach(i => scene.add(i));
+                    resolve(scene);
+                });
+            });
+        });
+    });
+};
+
+// =================================
+// 加载自定义数据格式 end
+// =================================
+// 内部方法 start
+// =================================
 
 /**
  * 解析文本到指定对象
@@ -136,6 +187,7 @@ function parseTextInner(path, loader, callback) {
         let pathPrefix = MODEL_PATH;
         if (loader === objectLoader) pathPrefix = '';
         if (loader === prefLoader) pathPrefix = PREFAB_PATH;
+        if (loader === sceneLoader) pathPrefix = SCENE_PATH;
         path = process.cwd() + '/public/' + pathPrefix + path;
         fs.readFile(path, 'utf8', (err, data) => {
             // post process
@@ -143,6 +195,34 @@ function parseTextInner(path, loader, callback) {
             callback(loader.parse(data));
         });
     }
+}
+
+/**
+ * 解析自定义的 GameObject 格式
+ * @param data
+ */
+function parseGameObjectInner(data) {
+    return new Promise(resolve => {
+        Resource['load' + data.objType.toUpperCase()](data.objName).then((obj) => {
+            if (data.name) obj.name = data.name;
+            if (data.position) obj.position.set(data.position[0], data.position[1], data.position[2]);
+            if (data.rotation) obj.rotation.set(data.rotation[0], data.rotation[1], data.rotation[2]);
+            if (data.scale) obj.scale.set(data.scale[0], data.scale[1], data.scale[2]);
+            let ret = new GameObject(obj);
+            if (data.networkId) ret.networkId = data.networkId;
+            data.components.forEach((comp) => {
+                //console.log(comp.name, Component.serializedComponents[comp.name]);
+                let constructor = Component.serializedComponents[comp.name];
+                // WTF 就只有客户端的这个组件不行，有病吧
+                if (comp.name === 'ChatManager') constructor = require('./components/ChatManager');
+                let component = new constructor();
+                component.props = comp.props || {};
+                ret.addComponent(component);
+            });
+            postProcess(data.name, obj);
+            resolve(ret);
+        });
+    });
 }
 
 /**
@@ -155,8 +235,8 @@ function postProcess(name, obj) {
     if (name === 'player') {
         // 设定 player 头和身体的相对位置
         obj.children[1].position.y = 0.8;
-        obj.position.y = 0.5;
-        obj.position.z = 3;
+        //obj.position.y = 0.5;
+        //obj.position.z = 3;
     }
 }
 
