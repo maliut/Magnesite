@@ -4,6 +4,7 @@ const GameObject = require('./GameObject');
 const Resource = require('./Resource');
 const StepTrigger = require('./components/StepTrigger');
 const MachineController = require('./components/MachineController');
+const MachineTrigger = require('./components/MachineTrigger');
 
 module.exports = function () {
 
@@ -60,9 +61,10 @@ module.exports = function () {
                     let ret = new GameObject(obj);
                     ret.name = 'btn0';
                     //ret.networkId = ret.name;
-                    let trigger = new StepTrigger();
+                    let trigger = new MachineTrigger();
                     trigger.props.triggerType = 0;
                     ret.addComponent(trigger);
+                    ret.addComponent(new StepTrigger());
                     resolve(ret);
                 });
             });
@@ -79,12 +81,34 @@ module.exports = function () {
                     let ret = new GameObject(obj);
                     ret.name = 'btn1';
                     //ret.networkId = ret.name;
-                    let trigger = new StepTrigger();
+                    let trigger = new MachineTrigger();
                     trigger.props.triggerType = 1;
                     ret.addComponent(trigger);
+                    ret.addComponent(new StepTrigger());
                     resolve(ret);
                 });
             });
+
+            let btnxor = new Promise(function (resolve) {
+                Resource.loadOBJ('btn_e').then((obj) => {
+                    obj.scale.x = 0.1;
+                    obj.scale.y = 0.1;
+                    obj.scale.z = 0.1;
+                    obj.position.y = 0.1;
+                    obj.position.z = 2;
+                    obj.position.x = 5;
+                    obj.rotation.y -= Math.PI / 2;
+                    let ret = new GameObject(obj);
+                    ret.name = 'btnxor';
+                    //ret.networkId = ret.name;
+                    let trigger = new MachineTrigger();
+                    trigger.props.triggerType = 5;
+                    ret.addComponent(trigger);
+                    ret.addComponent(new StepTrigger());
+                    resolve(ret);
+                });
+            });
+
 
             let btne = new Promise(function (resolve) {
                 Resource.loadOBJ('btn_e').then((obj) => {
@@ -99,9 +123,10 @@ module.exports = function () {
                     let ret = new GameObject(obj);
                     ret.name = 'btne';
                     //ret.networkId = ret.name;
-                    let trigger = new StepTrigger();
+                    let trigger = new MachineTrigger();
                     trigger.props.triggerType = 4;
                     ret.addComponent(trigger);
+                    ret.addComponent(new StepTrigger());
                     resolve(ret);
                 });
             });
@@ -120,9 +145,10 @@ module.exports = function () {
                     let ret = new GameObject(obj);
                     ret.name = 'moveRight';
                     //ret.networkId = ret.name;
-                    let trigger = new StepTrigger();
+                    let trigger = new MachineTrigger();
                     trigger.props.triggerType = 3;
                     ret.addComponent(trigger);
+                    ret.addComponent(new StepTrigger());
                     resolve(ret);
 
                 });
@@ -142,9 +168,10 @@ module.exports = function () {
                     let ret = new GameObject(obj);
                     ret.name = 'moveLeft';
                     //ret.networkId = ret.name;
-                    let trigger = new StepTrigger();
+                    let trigger = new MachineTrigger();
                     trigger.props.triggerType = 2;
                     ret.addComponent(trigger);
+                    ret.addComponent(new StepTrigger());
                     resolve(ret);
                 });
             });
@@ -156,7 +183,7 @@ module.exports = function () {
                 resolve(o);
             });
 
-            Promise.all([ambientLight, container, floor, arrow, btn0, btn1, moveLeft, moveRight, chatManager, btne]).then((arr) => {
+            Promise.all([ambientLight, container, floor, arrow, btn0, btn1, moveLeft, moveRight, chatManager, btne, btnxor]).then((arr) => {
                 resolve(arr);
             });
         });

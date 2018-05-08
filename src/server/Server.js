@@ -161,12 +161,13 @@ class Server {
         // 通知所有玩家，加入新玩家
         let player = room.game.scene.spawn('player');
         player.networkId = socket.id;
-        const StepTrigger = require('../common/components/StepTrigger');
-        room.game.scene.getObjectByName('btn0').getComponent(StepTrigger).authPlayers.push(player);
+        //const StepTrigger = require('../common/components/StepTrigger');
+        /*room.game.scene.getObjectByName('btn0').getComponent(StepTrigger).authPlayers.push(player);
         room.game.scene.getObjectByName('btn1').getComponent(StepTrigger).authPlayers.push(player);
         room.game.scene.getObjectByName('moveLeft').getComponent(StepTrigger).authPlayers.push(player);
         room.game.scene.getObjectByName('moveRight').getComponent(StepTrigger).authPlayers.push(player);
-        room.game.scene.getObjectByName('btne').getComponent(StepTrigger).authPlayers.push(player);
+        room.game.scene.getObjectByName('btne').getComponent(StepTrigger).authPlayers.push(player);*/
+        room.game.scene.onlinePlayers.push(player);
         this.io.in(room.id).emit(Event.SERVER_SPAWN, {
             id: socket.id,
             ext2: socket.username,

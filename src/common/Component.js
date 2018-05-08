@@ -31,9 +31,10 @@ class Component {
 
     /**
      * called when game object or component broadcast
+     * @param sender component
      * @param args
      */
-    onReceive(...args) {
+    onReceive(sender, ...args) {
 
     }
 }

@@ -63,7 +63,7 @@ class GamePanel extends React.Component {
         return (
             <div
                 style={{position: 'absolute', bottom: 0, top: '64px', left: 0, right: 0}}
-                ref={(mount) => { this.mount = mount }}> {
+                ref={(mount) => { this.mount = mount }} id={'gamePanel'}> {
                     <div style={{position: 'absolute', background: 'rgba(0,0,0,0.5)',
                         width: '100%', height: '100%', color: '#fff', textAlign: 'center',
                         display: 'flex', alignItems: 'center'}}

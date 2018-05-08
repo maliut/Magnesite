@@ -14,12 +14,13 @@ module.exports = {
         me.addComponent(new FirstPersonController());
         me.add(createMouseControlCamera());
 
-        const StepTrigger = require('../common/components/StepTrigger');
-        scene.getObjectByName('btn0').getComponent(StepTrigger).authPlayers.push(me);
+        //const StepTrigger = require('../common/components/StepTrigger');
+        /*scene.getObjectByName('btn0').getComponent(StepTrigger).authPlayers.push(me);
         scene.getObjectByName('btn1').getComponent(StepTrigger).authPlayers.push(me);
         scene.getObjectByName('moveLeft').getComponent(StepTrigger).authPlayers.push(me);
         scene.getObjectByName('moveRight').getComponent(StepTrigger).authPlayers.push(me);
-        scene.getObjectByName('btne').getComponent(StepTrigger).authPlayers.push(me);
+        scene.getObjectByName('btne').getComponent(StepTrigger).authPlayers.push(me);*/
+        scene.onlinePlayers.push(me);
     },
 
     createOtherPlayer: function (scene, networkId, name) {

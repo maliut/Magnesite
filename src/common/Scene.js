@@ -34,6 +34,12 @@ class Scene {
          */
         this.clientState = {};
         this.serverState = {};
+
+        /**
+         * 场景中玩家对象
+         * @type {Array}
+         */
+        this.onlinePlayers = [];
     }
 
     /**
