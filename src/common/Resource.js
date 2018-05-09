@@ -211,10 +211,12 @@ function parseGameObjectInner(data) {
             let ret = new GameObject(obj);
             if (data.networkId) ret.networkId = data.networkId;
             data.components.forEach((comp) => {
-                //console.log(comp.name, Component.serializedComponents[comp.name]);
-                let constructor = Component.serializedComponents[comp.name];
+                //console.log(comp.name, Components);
+                //const Component = require('./Component');
+                let constructor = Component.serializedComponents[comp.name];//Components[comp.name];
                 // WTF 就只有客户端的这个组件不行，有病吧
-                if (comp.name === 'ChatManager') constructor = require('./components/ChatManager');
+                //if (comp.name === 'ChatManager') constructor = require('./components/ChatManager');
+                //if (comp.name === 'TowerController') constructor = Components[comp.name];
                 let component = new constructor();
                 component.props = comp.props || {};
                 ret.addComponent(component);
@@ -241,3 +243,7 @@ function postProcess(name, obj) {
 }
 
 module.exports = Resource;
+
+// 组件会被 componentLoader 动态注册到这里
+//const Components = {};
+//e.g. //Components['TowerController'] = require('./components/TowerController');

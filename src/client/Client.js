@@ -35,12 +35,14 @@ class Client {
     /**
      * 请求创建房间
      * @param name 房间名
+     * @param type 房间类型
      * @param password 密码。null 为不需要密码
      * @param callback 创建后回调
      */
-    createRoom(name, password = null, callback = this.EMPTY) {
+    createRoom(name, type, password = null, callback = this.EMPTY) {
         this.socket.emit(Event.CLIENT_CREATE_ROOM, {
             name: name,
+            type: type,
             password: password
         });
         this.socket.on(Event.CLIENT_CREATE_ROOM, callback);

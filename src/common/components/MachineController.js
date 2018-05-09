@@ -3,6 +3,9 @@ const Component = require('../Component');
 //const GameObject = require('../GameObject');
 const ENV_CLIENT = !(typeof window === 'undefined');
 
+/**
+ * 图灵机控制器
+ */
 @Component.serializedName('MachineController')
 class MachineController extends Component {
 

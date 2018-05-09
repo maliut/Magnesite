@@ -14,8 +14,8 @@ class ChatManager extends Component {
     }
 
     start() {
-        this.chatInputDomElement = document.getElementById('chatInput');
-        this.chatPanel = document.getElementById('chatPanel');
+        //this.chatInputDomElement = document.getElementById('chatInput');
+        //this.chatPanel = document.getElementById('chatPanel');
         Client.current.subscribe(Event.CHAT_MESSAGE, this.onChatMessage.bind(this));
 
         this.existMessagesTimestamp = [];
@@ -26,7 +26,7 @@ class ChatManager extends Component {
         // 处理已经存在的消息
         if (this.existMessagesTimestamp.length > 0 && Date.now() - this.existMessagesTimestamp[0] > this.props.messageLife) {
             this.existMessagesTimestamp.splice(0, 1);
-            this.chatPanel.removeChild(this.chatPanel.lastChild);
+            this.getChatPanel().removeChild(this.getChatPanel().lastChild);
         }
 
         // 处理发消息
@@ -36,21 +36,22 @@ class ChatManager extends Component {
         }
         if (!Input.getKey('enter')) return;
         if (!document.hasFocus()) return;
-        if (document.activeElement === this.chatInputDomElement) {
-            if (this.chatInputDomElement.value !== '') {
+        if (document.activeElement === this.getChatInput()) {
+            if (this.getChatInput().value !== '') {
                 this.sendChatMessage();
-                this.chatInputDomElement.value = '';
+                this.getChatInput().value = '';
             }
-            this.chatInputDomElement.blur();
+            this.getChatInput().blur();
             this.cooldown = this.props.cooldown;
         } else {
-            this.chatInputDomElement.focus();
+
+            this.getChatInput().focus();
             this.cooldown = this.props.cooldown;
         }
     }
 
     sendChatMessage() {
-        Client.current.sendChatMessage(this.chatInputDomElement.value);
+        Client.current.sendChatMessage(this.getChatInput().value);
     }
 
     onChatMessage(data) {
@@ -59,12 +60,26 @@ class ChatManager extends Component {
         message.style.color = 'white';
         message.style.margin = '0';
         message.style.fontSize = '14px';
-        if (this.chatPanel.firstChild) {
-            this.chatPanel.insertBefore(message, this.chatPanel.firstChild);
+        if (this.getChatPanel().firstChild) {
+            this.getChatPanel().insertBefore(message, this.getChatPanel().firstChild);
         } else {
-            this.chatPanel.appendChild(message);
+            this.getChatPanel().appendChild(message);
         }
         this.existMessagesTimestamp.push(Date.now());
+    }
+
+    getChatInput() {
+        if (!this.chatInputDomElement) {
+            this.chatInputDomElement = document.getElementById('chatInput');
+        }
+        return this.chatInputDomElement;
+    }
+
+    getChatPanel() {
+        if (!this.chatPanel) {
+            this.chatPanel = document.getElementById('chatPanel');
+        }
+        return this.chatPanel;
     }
 
 }

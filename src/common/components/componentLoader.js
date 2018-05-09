@@ -30,3 +30,23 @@ function generateRegisterStatement(componentPath) {
 
     return texts;
 }
+
+/*
+// use in server pre run
+if (process.argv.splice(2)[0] === 's') {
+    let texts = generateRegisterStatement(componentPath);
+    fs.appendFileSync(path.resolve(__dirname, '../Resource.js'), texts);
+}
+
+function generateRegisterStatement(componentPath) {
+    const files = fs.readdirSync(componentPath);
+    let texts = '';
+    files.forEach(filename => {
+        if (filename === FILENAME) return;
+        let name = filename.split(".js")[0];
+        texts += '\nComponents[\'' + name + '\'] = require("./components/' + name + '");';
+    });
+    texts += "\nconsole.log('done');";
+    return texts;
+}
+ */

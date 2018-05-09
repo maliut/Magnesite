@@ -15,6 +15,7 @@ class CreateRoomButton extends React.Component {
         this.state = {
             open: false,
             roomName: '无标题房间',
+            roomType: 1,
             roomPassword: ''
         };
 
@@ -41,9 +42,13 @@ class CreateRoomButton extends React.Component {
         this.setState({roomPassword: value});
     }
 
+    handleRoomType(_, __, value) {
+        this.setState({roomType: value});
+    }
+
     handleCreateRoom() {
         let hasPw = this.state.roomPassword.trim().length > 0;
-        Client.current.createRoom(this.state.roomName, hasPw ? this.state.roomPassword : null, (room) => {
+        Client.current.createRoom(this.state.roomName, this.state.roomType, hasPw ? this.state.roomPassword : null, (room) => {
            this.handleClose();
            Client.current.joinRoom(room.id, hasPw ? this.state.roomPassword : null, (data) => {
                if (data.ret === 0) {
@@ -88,8 +93,10 @@ class CreateRoomButton extends React.Component {
                     <br/>
                     <SelectField
                         floatingLabelText="类型"
-                        value={1}>
+                        value={this.state.roomType}
+                        onChange={this.handleRoomType.bind(this)}>
                         <MenuItem value={1} primaryText="图灵机" />
+                        <MenuItem value={2} primaryText="汉诺塔" />
                     </SelectField>
                 </Dialog>
             </FloatingActionButton>

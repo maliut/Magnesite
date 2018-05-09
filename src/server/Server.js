@@ -1,9 +1,9 @@
 const uuid = require('uuid/v1');
 const Event = require('../common/Event');
 const Game = require('./Game');
-const Scene = require('../common/Scene');
+//const Scene = require('../common/Scene');
 const Resource = require('../common/Resource');
-const loadScene = require('../common/loadScene');
+//const loadScene = require('../common/loadScene');
 
 /**
  * 所有网络事件的处理器
@@ -18,6 +18,7 @@ class Server {
      * room 对象的定义：
      * - id - 随机 id
      * - name - 房间名字
+     * - type - 房间类型
      * - password - 房间密码
      * - players - 玩家 socket 数组
      * - game - 正在进行的游戏
@@ -55,12 +56,19 @@ class Server {
             room.game = new Game();
             room.game.syncMethod = this.updateRoom(room.id);
             // 根据游戏类型 load 不同的 scene
-            Resource.loadScene('turingmachine').then(scene => {
+            let sceneName = '';
+            if (room.type === 1) {
+                sceneName = 'turingmachine';
+            } else if (room.type === 2) {
+                sceneName = 'hanoi';
+            }
+            Resource.loadScene(sceneName).then(scene => {
                 room.game.scene = scene;
                 room.game.start();
                 socket.emit(Event.CLIENT_CREATE_ROOM, {
                     id: room.id,
                     name: room.name,
+                    type: room.type,
                     password: !!room.password
                 });
             });
@@ -127,6 +135,7 @@ class Server {
         let room = {
             id: id,
             name: data.name,
+            type: data.type,
             password: data.password,
             players: []
         };

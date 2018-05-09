@@ -1,14 +1,13 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 const MuiThemeProvider = require('material-ui/styles/MuiThemeProvider')['default'];
-const TitleBar = require('./ui/TitleBar.jsx');
-const RoomList = require('./ui/RoomList.jsx');
-const CreateRoomButton = require('./ui/CreateRoomButton.jsx');
-const LoginPanel = require('./ui/LoginPanel.jsx');
-const GamePanel = require('./ui/GamePanel.jsx');
+const TitleBar = require('./ui/TitleBar.js');
+const RoomList = require('./ui/RoomList.js');
+const CreateRoomButton = require('./ui/CreateRoomButton.js');
+const LoginPanel = require('./ui/LoginPanel.js');
+const GamePanel = require('./ui/GamePanel.js');
 const Client = require('./Client');
 const Game = require('./Game');
-const Scene = require('../common/Scene');
 const SceneHelper = require('./SceneHelper');
 const loadScene = require('../common/loadScene');
 
@@ -39,16 +38,29 @@ class App extends React.Component {
     onJoinRoom(room) {
         this.game = new Game();
         this.setState({room: room, progress: 0});
-        require('../common/Resource').loadScene('turingmachine').then(scene => {
-            SceneHelper.createSkyBox(scene, ['images/galaxy+X.jpg', 'images/galaxy-X.jpg', 'images/galaxy+Y.jpg',
-                'images/galaxy-Y.jpg', 'images/galaxy-Z.jpg', 'images/galaxy+Z.jpg'], 75);
-            // 生成自身
-            SceneHelper.createSelfPlayer(scene);
-            // 其余玩家
-            room.existPlayers.forEach((data) => SceneHelper.createOtherPlayer(scene, data.networkId, data.name));
-            this.game.scene = scene;
-            this.game.start();
-            this.setState({progress: 100});
+        let sceneName = '';
+        if (room.type === 1) {
+            sceneName = 'turingmachine';
+        } else if (room.type === 2) {
+            sceneName = 'hanoi';
+        }
+        require('../common/Resource').loadScene(sceneName).then(scene => {
+
+            //loadScene().then(arr => {
+                //arr.forEach(obj => scene.add(obj));
+
+                SceneHelper.createSkyBox(scene, ['images/galaxy+X.jpg', 'images/galaxy-X.jpg', 'images/galaxy+Y.jpg',
+                    'images/galaxy-Y.jpg', 'images/galaxy-Z.jpg', 'images/galaxy+Z.jpg'], 75);
+                // 生成自身
+                SceneHelper.createSelfPlayer(scene);
+                // 其余玩家
+                room.existPlayers.forEach((data) => SceneHelper.createOtherPlayer(scene, data.networkId, data.name));
+                this.game.scene = scene;
+                this.game.start();
+                this.setState({progress: 100});
+
+            //});
+
         });
     }
 

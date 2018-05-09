@@ -7,31 +7,31 @@ module.exports = {
 
     //devtool: "eval-cheap-module-source-map",
 
-    entry: './src/client/index.jsx',
+    entry: './dist/client/index.js',
 
     output: {
         path: path.resolve(__dirname, './public/'),
         filename: 'bundle.js'
     },
 
-    module: {
+    /*module: {
         rules: [
             {
                 test: /\.jsx$/,
-                include: path.resolve(__dirname, './src/'),
+                include: path.resolve(__dirname, './dist/'),
                 loader: "babel-loader"
             },
             {
-                include: path.resolve(__dirname, './src/common/components/'),
+                include: path.resolve(__dirname, './dist/common/components/'),
                 loader: "babel-loader"
             },
             {
                 test: /^Component.js$/,
-                include: path.resolve(__dirname, './src/common/components/'),
-                loader: path.resolve(__dirname, './src/common/components/componentLoader.js')
+                include: path.resolve(__dirname, './dist/common/components/'),
+                loader: path.resolve(__dirname, './dist/common/components/componentLoader.js')
             }
         ]
-    },
+    },*/
 
     externals: {
         "react": 'React',

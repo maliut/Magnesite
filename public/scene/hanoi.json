@@ -1,0 +1,154 @@
+{
+  "prefabs": ["player", "plate"],
+  "objects": [{
+      "objType": "json",
+      "objName": "light",
+      "name": "light",
+      "components": []
+    },
+    {
+      "objType": "json",
+      "objName": "floor",
+      "name": "floor",
+      "position": [0, -0.1, 0],
+      "components": []
+    },
+    {
+      "objType": "json",
+      "objName": "tower",
+      "name": "towerA",
+      "position": [-4, 2.5, 0],
+      "components": []
+    },
+    {
+      "objType": "json",
+      "objName": "tower",
+      "name": "towerB",
+      "position": [0, 2.5, 0],
+      "components": []
+    },
+    {
+      "objType": "json",
+      "objName": "tower",
+      "name": "towerC",
+      "position": [4, 2.5, 0],
+      "components": []
+    },
+    {
+      "objType": "empty",
+      "objName": "empty",
+      "name": "TowerController",
+      "networkId": "TowerController",
+      "components": [{
+        "name": "TowerController",
+        "props": {
+          "cooldown": 50
+        }
+      }]
+    },
+    {
+      "objType": "obj",
+      "objName": "btn_3",
+      "name": "btn3",
+      "position": [-1, 0.1, 3],
+      "rotation": [0, 1.5707963267948966, 0],
+      "scale": [0.1, 0.1, 0.1],
+      "components": [
+        {
+          "name": "StepTrigger",
+          "props": {
+            "triggerRadius": 0.3,
+            "selfHeight": 0.08
+          }
+        },
+        {
+          "name": "TowerTrigger",
+          "props": {
+            "triggerType": 3
+          }
+        }
+      ]
+    },
+    {
+      "objType": "obj",
+      "objName": "btn_4",
+      "name": "btn4",
+      "position": [0, 0.1, 3],
+      "rotation": [0, 1.5707963267948966, 0],
+      "scale": [0.1, 0.1, 0.1],
+      "components": [
+        {
+          "name": "StepTrigger",
+          "props": {
+            "triggerRadius": 0.3,
+            "selfHeight": 0.08
+          }
+        },
+        {
+          "name": "TowerTrigger",
+          "props": {
+            "triggerType": 4
+          }
+        }
+      ]
+    },
+    {
+      "objType": "obj",
+      "objName": "btn_5",
+      "name": "btn5",
+      "position": [1, 0.1, 3],
+      "rotation": [0, 1.5707963267948966, 0],
+      "scale": [0.1, 0.1, 0.1],
+      "components": [
+        {
+          "name": "StepTrigger",
+          "props": {
+            "triggerRadius": 0.3,
+            "selfHeight": 0.08
+          }
+        },
+        {
+          "name": "TowerTrigger",
+          "props": {
+            "triggerType": 5
+          }
+        }
+      ]
+    },
+    {
+      "objType": "obj",
+      "objName": "move",
+      "name": "start",
+      "position": [4, 0.1, 3],
+      "rotation": [0, 1.5707963267948966, 0],
+      "scale": [0.1, 0.1, 0.1],
+      "components": [
+        {
+          "name": "StepTrigger",
+          "props": {
+            "triggerRadius": 0.3,
+            "selfHeight": 0.08
+          }
+        },
+        {
+          "name": "TowerTrigger",
+          "props": {
+            "triggerType": 0
+          }
+        }
+      ]
+    },
+    {
+      "objType": "empty",
+      "objName": "empty",
+      "name": "chatManager",
+      "components": [{
+        "name": "ChatManager",
+        "props": {
+          "cooldown": 10,
+          "messageLife": 5000
+        }
+      }]
+    }
+  ]
+}

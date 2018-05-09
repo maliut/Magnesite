@@ -6,8 +6,8 @@
   "scripts": {
     "regcomp": "node dist/common/components/componentLoader.js s",
     "serve": "babel src -d dist & npm run regcomp & node dist/server/app.js",
-    "dev": "webpack --mode development & npm run serve",
-    "deploy": "webpack --mode production & npm run serve",
+    "dev": "babel src -d dist & npm run regcomp & webpack --mode development & node dist/server/app.js",
+    "deploy": "babel src -d dist & npm run regcomp & webpack --mode production & node dist/server/app.js",
     "start": "npm run dev"
   },
   "author": "maliut",

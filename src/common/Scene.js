@@ -121,6 +121,8 @@ class Scene {
     }
 
     spawn(prefabName, position, rotation) {
+        const Resource = require('./Resource');
+        //console.log(Resource.Prefab);
         let newObj = Resource.Prefab[prefabName].clone();
         if (position) newObj.position.set(position.x, position.y, position.z);
         if (rotation) newObj.rotation.set(rotation.x, rotation.y, rotation.z);

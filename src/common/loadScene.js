@@ -2,160 +2,21 @@
 const THREE = require('three');
 const GameObject = require('./GameObject');
 const Resource = require('./Resource');
-const StepTrigger = require('./components/StepTrigger');
-const MachineController = require('./components/MachineController');
-const MachineTrigger = require('./components/MachineTrigger');
 
 module.exports = function () {
 
     return new Promise(function (resolve) {
-        // load all prefab
-        Promise.all([Resource.loadPrefab('player'), Resource.loadPrefab('char_0'), Resource.loadPrefab('char_1'), Resource.loadPrefab('char_e')])
-        .then(() => {
 
-            // create static scene
-            /*let ambientLight = new Promise(function (resolve) {
-                let ambientLight = new THREE.AmbientLight(0xcccccc, 0.4);
-                resolve(new GameObject(ambientLight));
-            });
+        let tower = new Promise(function (resolve) {
+            var geometry = new THREE.CylinderGeometry( 0.2, 0.2, 5 );
+            var material = new THREE.MeshPhongMaterial( {color: 6684774} );
+            var cylinder = new THREE.Mesh( geometry, material );
+            cylinder.position.set(0, 2.5, 0);
+            console.log(JSON.stringify(cylinder.toJSON()));
+            resolve(new GameObject(cylinder));
+        });
 
-            let container = new Promise(function (resolve) {
-                let container = new GameObject(new THREE.Object3D());
-                container.networkId = container.name = 'TuringMachine';
-                container.addComponent(new MachineController());
-                //Promise.all([Resource.loadOBJ('char_0'), Resource.loadOBJ('char_1'), Resource.loadOBJ('char_e')]).then(() => {
-                    //console.log("resmodel", Resource.Model);
-                    resolve(container);
-                //});
-
-            });
-
-            let floor = new Promise(function (resolve) {
-                Resource.loadJSON('floor').then((cube) => {
-                    cube.position.y = -0.1;
-                    //console.log(cube);
-                    resolve(new GameObject(cube));
-                });
-            });
-
-            let arrow = new Promise(function (resolve) {
-                Resource.loadOBJ('arrow').then((arrow) => {
-                    arrow.scale.x = 0.1;
-                    arrow.scale.y = 0.1;
-                    arrow.scale.z = 0.1;
-                    arrow.position.y = 0.1;
-                    arrow.position.z = 1;
-                    arrow.rotation.y -= Math.PI / 2;
-                    resolve(new GameObject(arrow));
-                });
-            });
-
-            let btn0 = new Promise(function (resolve) {
-                Resource.loadOBJ('btn_0').then((obj) => {
-                    obj.scale.x = 0.1;
-                    obj.scale.y = 0.1;
-                    obj.scale.z = 0.1;
-                    obj.position.y = 0.1;
-                    obj.position.z = 2;
-                    obj.position.x = 1;
-                    obj.rotation.y -= Math.PI / 2;
-                    let ret = new GameObject(obj);
-                    ret.name = 'btn0';
-                    //ret.networkId = ret.name;
-                    let trigger = new MachineTrigger();
-                    trigger.props.triggerType = 0;
-                    ret.addComponent(trigger);
-                    ret.addComponent(new StepTrigger());
-                    resolve(ret);
-                });
-            });
-
-            let btn1 = new Promise(function (resolve) {
-                Resource.loadOBJ('btn_1').then((obj) => {
-                    obj.scale.x = 0.1;
-                    obj.scale.y = 0.1;
-                    obj.scale.z = 0.1;
-                    obj.position.y = 0.1;
-                    obj.position.z = 2;
-                    obj.position.x = 2;
-                    obj.rotation.y -= Math.PI / 2;
-                    let ret = new GameObject(obj);
-                    ret.name = 'btn1';
-                    //ret.networkId = ret.name;
-                    let trigger = new MachineTrigger();
-                    trigger.props.triggerType = 1;
-                    ret.addComponent(trigger);
-                    ret.addComponent(new StepTrigger());
-                    resolve(ret);
-                });
-            });
-
-            let btnxor = new Promise(function (resolve) {
-                Resource.loadOBJ('btn_e').then((obj) => {
-                    obj.scale.x = 0.1;
-                    obj.scale.y = 0.1;
-                    obj.scale.z = 0.1;
-                    obj.position.y = 0.1;
-                    obj.position.z = 2;
-                    obj.position.x = 5;
-                    obj.rotation.y -= Math.PI / 2;
-                    let ret = new GameObject(obj);
-                    ret.name = 'btnxor';
-                    //ret.networkId = ret.name;
-                    let trigger = new MachineTrigger();
-                    trigger.props.triggerType = 5;
-                    ret.addComponent(trigger);
-                    ret.addComponent(new StepTrigger());
-                    resolve(ret);
-                });
-            });
-
-
-            let btne = new Promise(function (resolve) {
-                Resource.loadOBJ('btn_e').then((obj) => {
-                    obj.scale.x = 0.1;
-                    obj.scale.y = 0.1;
-                    obj.scale.z = 0.1;
-                    obj.position.y = 0.1;
-                    obj.position.z = 2;
-                    obj.position.x = 0;
-                    obj.rotation.y -= Math.PI / 2;
-
-                    let ret = new GameObject(obj);
-                    ret.name = 'btne';
-                    //ret.networkId = ret.name;
-                    let trigger = new MachineTrigger();
-                    trigger.props.triggerType = 4;
-                    ret.addComponent(trigger);
-                    ret.addComponent(new StepTrigger());
-                    resolve(ret);
-                });
-            });
-
-            let moveLeft = new Promise(function (resolve) {
-                Resource.loadOBJ('move').then((obj) => {
-                    obj.scale.x = 0.1;
-                    obj.scale.y = 0.1;
-                    obj.scale.z = 0.1;
-                    obj.position.y = 0.1;
-                    obj.position.z = 2;
-
-                    let left = obj;
-                    left.position.x = -2;
-                    left.rotation.y -= Math.PI / 2;
-                    let ret = new GameObject(obj);
-                    ret.name = 'moveRight';
-                    //ret.networkId = ret.name;
-                    let trigger = new MachineTrigger();
-                    trigger.props.triggerType = 3;
-                    ret.addComponent(trigger);
-                    ret.addComponent(new StepTrigger());
-                    resolve(ret);
-
-                });
-            });*/
-
-            let moveRight = new Promise(function (resolve) {
+            /*let moveRight = new Promise(function (resolve) {
                 Resource.loadOBJ('move').then((obj) => {
                     obj.scale.x = 0.1;
                     obj.scale.y = 0.1;
@@ -182,12 +43,10 @@ module.exports = function () {
                 let ChatManager = require('./components/ChatManager');
                 o.addComponent(new ChatManager());
                 resolve(o);
-            });
+            });*/
 
-            Promise.all([ambientLight, container, floor, arrow, btn0, btn1, moveLeft, moveRight, chatManager, btne, btnxor]).then((arr) => {
+            Promise.all([tower]).then((arr) => {
                 resolve(arr);
             });
-        });
     });
-
 };
