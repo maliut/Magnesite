@@ -120,6 +120,7 @@ class Server {
             return {
                 id: room.id,
                 name: room.name,
+                type: room.type,
                 password: !!room.password
             };
         });
