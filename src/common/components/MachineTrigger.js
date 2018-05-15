@@ -76,8 +76,8 @@ class MachineTrigger extends Component {
 module.exports = MachineTrigger;
 
 const xorProgram = {
-    "title": "异或",
-    "description": "计算二进制数的异或。请把指针头指向最右边的数字。",
+    "title": "按位取反",
+    "description": "二进制数按位取反。请把指针头指向最右边的数字。",
     "commands": {
         "start": {
             "0": ["start", "1", "<"],
@@ -86,8 +86,8 @@ const xorProgram = {
     }
 };
 
-const xorIntro = "【异或】\n" +
-    "计算二进制数的异或。请把指针头指向最右边的数字。\n" +
+const xorIntro = "【按位取反】\n" +
+    "二进制数按位取反。请把指针头指向最右边的数字。\n" +
     "\n" +
     "状态为 start 且读到 0 ：\n" +
     "写入 1 ，左移，设置状态为 start\n" +
