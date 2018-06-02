@@ -1,6 +1,4 @@
 const Component = require('../Component');
-const MachineController = require('./MachineController');
-const ENV_CLIENT = !(typeof window === 'undefined');
 
 /**
  * 按钮触发器

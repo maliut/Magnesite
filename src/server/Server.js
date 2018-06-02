@@ -4,6 +4,9 @@ const Game = require('./Game');
 //const Scene = require('../common/Scene');
 const Resource = require('../common/Resource');
 //const loadScene = require('../common/loadScene');
+const protobuf = require('protobufjs');
+
+let ClientState = null;
 
 /**
  * 所有网络事件的处理器
@@ -28,6 +31,10 @@ class Server {
         this.io = io;
         this.rooms = new Map();   // id => room
         this.onlineUsers = new Set();
+
+        protobuf.load('public/pb/message.pb').then(root => {
+            ClientState = root.lookupType("AvatarState");
+        });
     }
 
     /**
@@ -88,7 +95,10 @@ class Server {
 
                 // 接收客户端状态
                 socket.on(Event.CLIENT_SEND_STATE, (data) => {
-                    socket.room.game.onPlayerState(socket, data);
+                    //console.log(data, typeof data);
+                    let state = ClientState.decode(new Uint8Array(data));
+                    //console.log(state);
+                    socket.room.game.onPlayerState(socket, state);
                 });
 
                 // 聊天

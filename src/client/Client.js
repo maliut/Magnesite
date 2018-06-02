@@ -1,4 +1,7 @@
 const Event = require('../common/Event');
+const protobuf = require('protobufjs');
+
+let Message = null;
 
 /**
  * 客户端 socket 的封装类
@@ -13,6 +16,9 @@ class Client {
         //this.socket.on(Event.ROOMS_CHANGE, this.onRoomChange);
 
         //this.socket.on(Event.SYNC_CLIENTS, this.onSync);
+        protobuf.load('pb/message.pb').then(root => {
+            Message = root.lookupType("AvatarState");
+        });
 
         this.EMPTY = () => {};
     }
@@ -89,7 +95,15 @@ class Client {
     sendState(state) {
         if (!this.roomId) return;
         //console.log(state);
-        this.socket.emit(Event.CLIENT_SEND_STATE, state);
+        if (!Message) {
+            console.warn("pb not ready!");
+            return;
+        }
+        let message = Message.create(state);
+        let buffer = Message.encode(message).finish();
+        console.log(buffer, typeof buffer);
+        this.socket.emit(Event.CLIENT_SEND_STATE, new Blob([buffer]));
+        //this.socket.emit(Event.CLIENT_SEND_STATE, state);
     }
 
     subscribe(event, callback) {

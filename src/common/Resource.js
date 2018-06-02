@@ -2,7 +2,6 @@ const THREE = require('three');
 const MTLLoader = require('three-mtl-loader');
 const GameObject = require('./GameObject');
 const Component = require('./Component');
-const Scene = require('./Scene');
 require('three-obj-loader')(THREE);
 const ENV_CLIENT = !(typeof window === 'undefined');
 const fs = ENV_CLIENT ? undefined : require('fs');

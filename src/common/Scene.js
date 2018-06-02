@@ -1,5 +1,4 @@
 const THREE = require('three');
-const Resource = require('./Resource');
 
 /**
  * Scene of a game, a wrapper for THREE.Scene
